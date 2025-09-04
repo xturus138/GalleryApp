@@ -7,7 +7,6 @@
         <h1><span id="current-view-title">All Media</span></h1>
         <div class="action-buttons">
             <button onclick="showUploadModal()">Unggah</button>
-            <button onclick="showCreateFolderModal()">Folder Baru</button>
         </div>
     </div>
 
@@ -493,44 +492,61 @@
             }
         });
         
+        let allFolders = [];
+
         async function fetchFolders() {
             try {
                 const response = await fetch('{{ route("folders.list") }}');
                 const folders = await response.json();
+                allFolders = folders; // Store all folders
                 const folderSelect = document.getElementById('folder');
                 folderSelect.innerHTML = '<option value="none">Tidak ada folder</option>';
-                const folderSidebar = document.getElementById('folders-list-container');
-                folderSidebar.innerHTML = '';
-                
+
                 folders.forEach(folder => {
                     // Update dropdown list
                     const option = document.createElement('option');
                     option.value = folder.id;
                     option.innerText = folder.name;
                     folderSelect.appendChild(option);
-
-                    // Update sidebar list
-                    const li = document.createElement('li');
-                    const a = document.createElement('a');
-                    a.href = '#';
-                    a.innerText = folder.name;
-                    a.onclick = (e) => {
-                        e.preventDefault();
-                        document.getElementById('current-view-title').innerText = folder.name;
-                        fetchAssets(folder.id);
-                    };
-                    li.appendChild(a);
-                    folderSidebar.appendChild(li);
                 });
+
+                renderFolders(folders); // Render all initially
             } catch (error) {
                 console.error('Error fetching folders:', error);
             }
+        }
+
+        function renderFolders(folders) {
+            const folderSidebar = document.getElementById('folders-list-container');
+            folderSidebar.innerHTML = '';
+
+            folders.forEach(folder => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = '#';
+                a.innerText = folder.name;
+                a.onclick = (e) => {
+                    e.preventDefault();
+                    document.getElementById('current-view-title').innerText = folder.name;
+                    fetchAssets(folder.id);
+                };
+                li.appendChild(a);
+                folderSidebar.appendChild(li);
+            });
         }
         
         // Memuat semua aset dan folder saat halaman dimuat
         document.addEventListener('DOMContentLoaded', () => {
             fetchAssets();
             fetchFolders();
+
+            // Add live search for folders
+            const searchInput = document.getElementById('folder-search');
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase();
+                const filteredFolders = allFolders.filter(folder => folder.name.toLowerCase().includes(query));
+                renderFolders(filteredFolders);
+            });
         });
 
         // Perbarui URL fetch di fungsi fetchAssets

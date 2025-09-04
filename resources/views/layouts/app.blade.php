@@ -27,6 +27,7 @@
             display: flex;
             flex-direction: column;
             transition: all 0.3s ease;
+            position: relative;
         }
         @media (max-width: 768px) {
             .sidebar {
@@ -80,6 +81,30 @@
         }
         .sidebar-menu a:hover {
             background-color: #e9ecef;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .logout-button {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            padding: 12px 15px;
+            background-color: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+        .logout-button:hover {
+            background-color: #c82333;
         }
         .content {
             flex-grow: 1;
@@ -155,13 +180,13 @@
             </div>
             <ul class="sidebar-menu">
                 <li><a href="{{ route('dashboard') }}" id="all-media-link">🏠 All Media</a></li>
-                <li><a href="#">🔍 Search</a></li>
                 <li><a href="#" onclick="showCreateFolderModal()">📂 Folder Baru</a></li>
                 <li style="margin-top: 10px; font-weight: bold; color: #495057;">Daftar Folder:</li>
+                <input type="text" class="search-input" placeholder="🔍 Search folders..." id="folder-search">
                 <div id="folders-list-container">
                     </div>
-                <li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">🚪 Logout</a></li>
             </ul>
+            <a href="{{ route('logout') }}" class="logout-button" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">🚪 Logout</a>
         </aside>
 
         <div class="content">
