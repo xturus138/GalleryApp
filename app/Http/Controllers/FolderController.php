@@ -21,9 +21,10 @@ class FolderController extends Controller
         return response()->json(['success' => true, 'folder' => $folder], 201);
     }
 
-    public function list()
+    public function list(Request $request)
     {
-        $folders = Folder::where('created_by', Auth::id())->get();
+        $page = $request->query('page', 1);
+        $folders = Folder::where('created_by', Auth::id())->paginate(5, ['*'], 'page', $page);
         return response()->json($folders);
     }
 

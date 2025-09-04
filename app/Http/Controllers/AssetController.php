@@ -25,11 +25,12 @@ class AssetController extends Controller
 
     public function getAssets(Request $request)
     {
+        $page = $request->query('page', 1);
         $assets = Asset::where('uploaded_by', Auth::id())
             ->latest()
-            ->get();
+            ->paginate(10, ['*'], 'page', $page);
 
-        $assets->transform(function ($asset) {
+        $assets->getCollection()->transform(function ($asset) {
             $asset->formatted_size = SizeHelper::formatSize($asset->file_size);
             return $asset;
         });
@@ -37,15 +38,16 @@ class AssetController extends Controller
         return response()->json($assets);
     }
 
-    // Metode baru untuk mengambil aset berdasarkan folder
-    public function getAssetsByFolder($folderId)
+    // Metode baru untuk mengambil aset berdasarkan folder dengan pagination
+    public function getAssetsByFolder(Request $request, $folderId)
     {
+        $page = $request->query('page', 1);
         $assets = Asset::where('uploaded_by', Auth::id())
             ->where('folder_id', $folderId)
             ->latest()
-            ->get();
+            ->paginate(10, ['*'], 'page', $page);
 
-        $assets->transform(function ($asset) {
+        $assets->getCollection()->transform(function ($asset) {
             $asset->formatted_size = SizeHelper::formatSize($asset->file_size);
             return $asset;
         });
@@ -55,47 +57,52 @@ class AssetController extends Controller
 
     public function upload(Request $request)
     {
-        $request->validate([
-            'files' => 'required|array',
-            'files.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,webm|max:100000',
-            'title' => 'nullable|string|max:255',
-            'caption' => 'nullable|string',
-            'folder' => 'nullable|uuid',
-        ]);
-
-        $uploadedAssets = [];
-        $caption = $request->input('caption');
-        $title = $request->input('title');
-        $folderId = $request->input('folder');
-
-        foreach ($request->file('files') as $file) {
-            $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-            $extension = $file->getClientOriginalExtension();
-            $filename = Str::slug($originalName) . '-' . time() . '.' . $extension;
-
-            $path = 'uploads/' . Auth::id();
-            $fullPath = $file->storeAs($path, $filename, 'public');
-
-            $fileSize = $file->getSize();
-            $fileType = $file->getClientMimeType();
-
-            $asset = Asset::create([
-                'id' => Str::uuid(),
-                'filename' => $filename,
-                'original_filename' => $file->getClientOriginalName(),
-                'title' => $title,
-                'file_type' => $fileType,
-                'file_size' => $fileSize,
-                'blob_url' => Storage::url($fullPath),
-                'uploaded_by' => Auth::id(),
-                'caption' => $caption,
-                'folder_id' => ($folderId === 'none') ? null : $folderId,
+        try {
+            $request->validate([
+                'files' => 'required|array',
+                'files.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,webm|max:100000',
+                'title' => 'nullable|string|max:255',
+                'caption' => 'nullable|string',
+                'folder' => 'nullable|uuid|exists:folders,id',
             ]);
 
-            $uploadedAssets[] = $asset;
-        }
+            $uploadedAssets = [];
+            $caption = $request->input('caption');
+            $title = $request->input('title');
+            $folderId = $request->input('folder');
 
-        return response()->json(['success' => true, 'assets' => $uploadedAssets], 200);
+            foreach ($request->file('files') as $file) {
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $extension = $file->getClientOriginalExtension();
+                $filename = Str::slug($originalName) . '-' . time() . '.' . $extension;
+
+                $path = 'uploads/' . Auth::id();
+                $fullPath = $file->storeAs($path, $filename, 'public');
+
+                $fileSize = $file->getSize();
+                $fileType = $file->getClientMimeType();
+
+                $asset = Asset::create([
+                    'id' => Str::uuid(),
+                    'filename' => $filename,
+                    'original_filename' => $file->getClientOriginalName(),
+                    'title' => $title,
+                    'file_type' => $fileType,
+                    'file_size' => $fileSize,
+                    'blob_url' => Storage::url($fullPath),
+                    'uploaded_by' => Auth::id(),
+                    'caption' => $caption,
+                    'folder_id' => ($folderId === 'none') ? null : $folderId,
+                ]);
+
+                $uploadedAssets[] = $asset;
+            }
+
+            return response()->json(['success' => true, 'assets' => $uploadedAssets], 200);
+        } catch (\Exception $e) {
+            \Log::error('Upload error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat mengunggah file.'], 500);
+        }
     }
 
     public function show($id)

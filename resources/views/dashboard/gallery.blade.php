@@ -28,6 +28,13 @@
 
     <div id="gallery-container" class="gallery-grid" style="display: none;">
     </div>
+
+    <!-- Pagination for Assets -->
+    <div id="assets-pagination" class="pagination-container" style="display: none;">
+        <button id="assets-prev" class="pagination-btn">Previous</button>
+        <span id="assets-page-info" class="page-info"></span>
+        <button id="assets-next" class="pagination-btn">Next</button>
+    </div>
     
     <div id="uploadModal" class="modal">
         <div class="modal-content">
@@ -344,6 +351,38 @@
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* Pagination Styles */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 10px;
+        }
+        .pagination-btn {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        .pagination-btn:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        .pagination-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .page-info {
+            font-size: 0.9rem;
+            color: #495057;
+            font-weight: 500;
+        }
     </style>
 
     <script>
@@ -351,34 +390,43 @@
             fetchAssets();
         });
 
-        async function fetchAssets(folderId = null) {
+        let currentAssetPage = 1;
+        let currentFolderId = null;
+
+        async function fetchAssets(folderId = null, page = 1) {
             document.getElementById('loading-skeleton').style.display = 'grid';
             document.getElementById('gallery-container').style.display = 'none';
 
+            currentFolderId = folderId;
+            currentAssetPage = page;
+
             let url = '{{ route("assets.list") }}';
             if (folderId) {
-                url = `/assets/folder/${folderId}`; // Perbarui URL untuk filter
+                url = `/assets/folder/${folderId}?page=${page}`;
+            } else {
+                url = `/assets?page=${page}`;
             }
 
             try {
                 const response = await fetch(url);
-                const assets = await response.json();
-                
+                const data = await response.json();
+
                 document.getElementById('loading-skeleton').style.display = 'none';
                 document.getElementById('gallery-container').style.display = 'grid';
-                renderAssets(assets);
+                renderAssets(data.data || data, data);
             } catch (error) {
                 console.error('Error fetching assets:', error);
                 document.getElementById('loading-skeleton').innerHTML = '<p>Gagal memuat galeri. Silakan coba lagi.</p>';
             }
         }
 
-        function renderAssets(assets) {
+        function renderAssets(assets, paginationData = null) {
             const container = document.getElementById('gallery-container');
             container.innerHTML = '';
-            
+
             if (assets.length === 0) {
                 container.innerHTML = '<p>Belum ada file yang diunggah.</p>';
+                document.getElementById('assets-pagination').style.display = 'none';
                 return;
             }
 
@@ -391,7 +439,7 @@
                 } else {
                     mediaHtml = `<img src="/file-icon.png" alt="File">`;
                 }
-                
+
                 const assetHtml = `
                     <div class="gallery-item" style="animation-delay: ${index * 0.1}s;">
                         <div class="dropdown">
@@ -416,6 +464,29 @@
                 `;
                 container.insertAdjacentHTML('beforeend', assetHtml);
             });
+
+            // Handle pagination
+            if (paginationData && paginationData.last_page > 1) {
+                renderAssetsPagination(paginationData);
+            } else {
+                document.getElementById('assets-pagination').style.display = 'none';
+            }
+        }
+
+        function renderAssetsPagination(paginationData) {
+            const paginationContainer = document.getElementById('assets-pagination');
+            const pageInfo = document.getElementById('assets-page-info');
+            const prevBtn = document.getElementById('assets-prev');
+            const nextBtn = document.getElementById('assets-next');
+
+            pageInfo.textContent = `Page ${paginationData.current_page} of ${paginationData.last_page}`;
+            prevBtn.disabled = paginationData.current_page <= 1;
+            nextBtn.disabled = paginationData.current_page >= paginationData.last_page;
+
+            prevBtn.onclick = () => fetchAssets(currentFolderId, paginationData.current_page - 1);
+            nextBtn.onclick = () => fetchAssets(currentFolderId, paginationData.current_page + 1);
+
+            paginationContainer.style.display = 'flex';
         }
 
         function showUploadModal() {
@@ -493,7 +564,8 @@
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                        'Accept': 'application/json'
                     }
                 });
 
@@ -502,9 +574,10 @@
                 if(data.success) {
                     alert('File berhasil diunggah!');
                     hideUploadModal();
-                    await fetchAssets();
+                    await fetchAssets(currentFolderId, 1); // Reset to page 1 after upload
                 } else {
-                    alert('Unggah gagal: ' + JSON.stringify(data.errors));
+                    const errorMsg = data.errors ? 'Unggah gagal: ' + JSON.stringify(data.errors) : 'Unggah gagal: ' + (data.message || 'Terjadi kesalahan tidak dikenal.');
+                    alert(errorMsg);
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -536,8 +609,8 @@
                 if (data.success) {
                     alert('Folder berhasil dibuat!');
                     hideCreateFolderModal();
-                    await fetchAssets();
-                    await fetchFolders();
+                    await fetchAssets(currentFolderId, 1); // Reset to page 1 after folder creation
+                    await fetchFolders(1); // Reset folders to page 1
                 } else {
                     alert('Gagal membuat folder: ' + JSON.stringify(data.errors));
                 }
@@ -550,12 +623,16 @@
         });
         
         let allFolders = [];
+        let currentFoldersPage = 1;
 
-        async function fetchFolders() {
+        async function fetchFolders(page = 1) {
             try {
-                const response = await fetch('{{ route("folders.list") }}');
-                const folders = await response.json();
-                allFolders = folders; // Store all folders
+                currentFoldersPage = page;
+                const response = await fetch(`{{ route("folders.list") }}?page=${page}`);
+                const data = await response.json();
+                const folders = data.data || data;
+
+                allFolders = folders; // Store current page folders
                 const folderSelect = document.getElementById('folder');
                 folderSelect.innerHTML = '<option value="none">Tidak ada folder</option>';
 
@@ -567,13 +644,13 @@
                     folderSelect.appendChild(option);
                 });
 
-                renderFolders(folders); // Render all initially
+                renderFolders(folders, data); // Render with pagination data
             } catch (error) {
                 console.error('Error fetching folders:', error);
             }
         }
 
-        function renderFolders(folders) {
+        function renderFolders(folders, paginationData = null) {
             const folderSidebar = document.getElementById('folders-list-container');
             folderSidebar.innerHTML = '';
 
@@ -588,7 +665,7 @@
                 a.onclick = (e) => {
                     e.preventDefault();
                     document.getElementById('current-view-title').innerText = folder.name;
-                    fetchAssets(folder.id);
+                    fetchAssets(folder.id, 1); // Reset to page 1 when switching folders
                 };
 
                 const buttonContainer = document.createElement('div');
@@ -617,12 +694,35 @@
                 li.appendChild(buttonContainer);
                 folderSidebar.appendChild(li);
             });
+
+            // Handle pagination
+            if (paginationData && paginationData.last_page > 1) {
+                renderFoldersPagination(paginationData);
+            } else {
+                document.getElementById('folders-pagination').style.display = 'none';
+            }
+        }
+
+        function renderFoldersPagination(paginationData) {
+            const paginationContainer = document.getElementById('folders-pagination');
+            const pageInfo = document.getElementById('folders-page-info');
+            const prevBtn = document.getElementById('folders-prev');
+            const nextBtn = document.getElementById('folders-next');
+
+            pageInfo.textContent = `Page ${paginationData.current_page} of ${paginationData.last_page}`;
+            prevBtn.disabled = paginationData.current_page <= 1;
+            nextBtn.disabled = paginationData.current_page >= paginationData.last_page;
+
+            prevBtn.onclick = () => fetchFolders(paginationData.current_page - 1);
+            nextBtn.onclick = () => fetchFolders(paginationData.current_page + 1);
+
+            paginationContainer.style.display = 'flex';
         }
         
         // Memuat semua aset dan folder saat halaman dimuat
         document.addEventListener('DOMContentLoaded', () => {
-            fetchAssets();
-            fetchFolders();
+            fetchAssets(null, 1);
+            fetchFolders(1);
 
             // Add live search for folders
             const searchInput = document.getElementById('folder-search');
@@ -725,7 +825,7 @@
                     if (data.success) {
                         alert('Media berhasil diperbarui!');
                         hideEditModal();
-                        await fetchAssets();
+                        await fetchAssets(currentFolderId, currentAssetPage); // Stay on current page after edit
                     } else {
                         alert('Gagal memperbarui media: ' + JSON.stringify(data.errors));
                     }
@@ -763,7 +863,7 @@
 
                 if (data.success) {
                     alert('Media berhasil dihapus!');
-                    await fetchAssets();
+                    await fetchAssets(currentFolderId, currentAssetPage); // Stay on current page after delete
                 } else {
                     alert('Gagal menghapus media: ' + JSON.stringify(data.errors));
                 }
@@ -863,7 +963,7 @@
                     // If the current view is the deleted folder, switch to "All Media"
                     if (document.getElementById('current-view-title').innerText === name) {
                         document.getElementById('current-view-title').innerText = 'All Media';
-                        await fetchAssets();
+                        await fetchAssets(null, 1); // Switch to all media, page 1
                     }
                 } else {
                     alert('Gagal menghapus folder: ' + JSON.stringify(data.errors));

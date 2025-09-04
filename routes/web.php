@@ -19,6 +19,8 @@ Route::middleware(['auth'])->group(function () {
     // Rute untuk aset
     Route::get('/assets', [AssetController::class, 'getAssets'])->name('assets.list');
     Route::get('/assets/folder/{folderId}', [AssetController::class, 'getAssetsByFolder'])->name('assets.folder');
+    Route::get('/assets/page/{page}', [AssetController::class, 'getAssets'])->name('assets.page');
+    Route::get('/assets/folder/{folderId}/page/{page}', [AssetController::class, 'getAssetsByFolder'])->name('assets.folder.page');
     Route::post('/upload', [AssetController::class, 'upload'])->name('asset.upload');
     Route::get('/assets/{id}', [AssetController::class, 'show'])->name('assets.show');
     Route::put('/assets/{id}', [AssetController::class, 'update'])->name('assets.update');

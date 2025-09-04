@@ -228,6 +228,12 @@
                 <input type="text" class="search-input" placeholder="🔍 Search folders..." id="folder-search">
                 <div id="folders-list-container">
                     </div>
+                <!-- Pagination for Folders -->
+                <div id="folders-pagination" class="pagination-container" style="display: none; margin-top: 10px;">
+                    <button id="folders-prev" class="pagination-btn">Previous</button>
+                    <span id="folders-page-info" class="page-info"></span>
+                    <button id="folders-next" class="pagination-btn">Next</button>
+                </div>
             </ul>
     <a href="{{ route('logout') }}" class="logout-button" id="logoutLink">🚪 Logout</a>
 </aside>

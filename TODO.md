@@ -1,53 +1,45 @@
-# Animation Plan for Gallery App
+# Pagination Feature for Gallery App
 
 ## Information Gathered
 
--   Project: Laravel Gallery App with views for login, dashboard, gallery.
--   Current animations: Basic transitions, spinners, skeleton loading.
--   Technologies: Laravel Blade, CSS, minimal JS.
--   Files: app.css, layout.blade.php, gallery.blade.php, login.blade.php, dashboard.blade.php.
+-   Project: Laravel Gallery App with assets (photos/videos) and folders.
+-   Current: No pagination, loads all assets/folders at once.
+-   Technologies: Laravel, Blade, JavaScript (fetch API).
+-   Controllers: AssetController, FolderController.
+-   Views: gallery.blade.php (main gallery view).
+-   Data loading: AJAX via fetchAssets() and fetchFolders().
 
 ## Plan
 
-1. **Global Animations** (resources/css/app.css)
+1. **Backend Changes** ✅
 
-    - Add fade-in for page loads.
-    - Smooth transitions for all elements.
-    - Hover effects for interactive elements.
+    - ✅ Modify AssetController::getAssets() to use paginate(10).
+    - ✅ Modify AssetController::getAssetsByFolder() to use paginate(10).
+    - ✅ Modify FolderController::list() to use paginate(5).
+    - ✅ Update routes to accept page parameters.
 
-2. **Layout Animations** (resources/views/layouts/app.blade.php)
+2. **Frontend Changes** ✅
 
-    - Animate sidebar slide-in/out.
-    - Fade-in for content.
-    - Button hover animations.
+    - ✅ Update fetchAssets() to handle paginated response and page parameter.
+    - ✅ Update fetchFolders() to handle paginated response and page parameter.
+    - ✅ Add pagination UI components (prev/next buttons, page numbers).
+    - ✅ Update renderAssets() and renderFolders() to work with paginated data.
 
-3. **Gallery Animations** (resources/views/dashboard/gallery.blade.php)
+3. **View Updates** ✅
 
-    - Staggered fade-in for gallery items.
-    - Hover zoom for images.
-    - Animate modal open/close.
-    - Loading skeleton animations (already present, enhance).
-
-4. **Login Animations** (resources/views/auth/login.blade.php)
-
-    - Fade-in for login container.
-    - Input focus animations.
-    - Button press animation.
-
-5. **Dashboard Animations** (resources/views/dashboard.blade.php)
-    - Fade-in for dashboard container.
-    - Button hover animations.
+    - ✅ Add pagination controls in gallery.blade.php.
+    - ✅ Style pagination buttons consistently with app design.
 
 ## Dependent Files
 
--   resources/css/app.css
--   resources/views/layouts/app.blade.php
+-   app/Http/Controllers/AssetController.php
+-   app/Http/Controllers/FolderController.php
+-   routes/web.php
 -   resources/views/dashboard/gallery.blade.php
--   resources/views/auth/login.blade.php
--   resources/views/dashboard.blade.php
 
 ## Followup Steps
 
--   Test animations in browser.
--   Ensure animations don't affect performance.
--   Add media queries for mobile animations.
+-   Test pagination with sample data.
+-   Ensure smooth loading between pages.
+-   Handle edge cases (no data, single page).
+-   Optimize queries if needed.
