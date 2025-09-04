@@ -172,7 +172,6 @@
     <div class="main-container">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="/placeholder-logo.svg" alt="Logo">
             </div>
             <div class="user-info">
                 <img src="/placeholder-user.jpg" alt="User Avatar">
