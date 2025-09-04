@@ -566,15 +566,42 @@
 
             folders.forEach(folder => {
                 const li = document.createElement('li');
+                li.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 5px 0;';
+
                 const a = document.createElement('a');
                 a.href = '#';
                 a.innerText = folder.name;
+                a.style.cssText = 'flex-grow: 1; text-decoration: none; color: #495057;';
                 a.onclick = (e) => {
                     e.preventDefault();
                     document.getElementById('current-view-title').innerText = folder.name;
                     fetchAssets(folder.id);
                 };
+
+                const buttonContainer = document.createElement('div');
+                buttonContainer.style.cssText = 'display: flex; gap: 5px;';
+
+                const editButton = document.createElement('button');
+                editButton.innerText = '✏️';
+                editButton.style.cssText = 'background: none; border: none; cursor: pointer; font-size: 0.8rem;';
+                editButton.onclick = (e) => {
+                    e.stopPropagation();
+                    showEditFolderModal(folder.id, folder.name);
+                };
+
+                const deleteButton = document.createElement('button');
+                deleteButton.innerText = '🗑️';
+                deleteButton.style.cssText = 'background: none; border: none; cursor: pointer; font-size: 0.8rem;';
+                deleteButton.onclick = (e) => {
+                    e.stopPropagation();
+                    deleteFolder(folder.id, folder.name);
+                };
+
+                buttonContainer.appendChild(editButton);
+                buttonContainer.appendChild(deleteButton);
+
                 li.appendChild(a);
+                li.appendChild(buttonContainer);
                 folderSidebar.appendChild(li);
             });
         }
@@ -727,6 +754,102 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Terjadi kesalahan saat menghapus media.');
+            }
+        }
+
+        function showEditFolderModal(id, name) {
+            const modalContent = `
+                <div class="modal-content">
+                    <span class="close-button" onclick="hideEditFolderModal()">&times;</span>
+                    <h2>Edit Folder</h2>
+                    <form id="editFolderForm">
+                        <input type="hidden" name="id" value="${id}">
+                        <div class="form-group">
+                            <label for="editFolderName">Nama Folder</label>
+                            <input type="text" id="editFolderName" name="name" value="${name}" required>
+                        </div>
+                        <button type="submit">Simpan Perubahan</button>
+                    </form>
+                </div>
+            `;
+
+            const modal = document.createElement('div');
+            modal.id = 'editFolderModal';
+            modal.className = 'modal';
+            modal.innerHTML = modalContent;
+            document.body.appendChild(modal);
+
+            modal.style.display = 'block';
+
+            document.getElementById('editFolderForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(event.target);
+                const folderId = formData.get('id');
+                const name = formData.get('name');
+
+                try {
+                    const response = await fetch(`/folders/${folderId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                        },
+                        body: JSON.stringify({ name })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert('Folder berhasil diperbarui!');
+                        hideEditFolderModal();
+                        await fetchFolders();
+                    } else {
+                        alert('Gagal memperbarui folder: ' + JSON.stringify(data.errors));
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat memperbarui folder.');
+                }
+            });
+        }
+
+        function hideEditFolderModal() {
+            const modal = document.getElementById('editFolderModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        async function deleteFolder(id, name) {
+            if (!confirm(`Apakah Anda yakin ingin menghapus folder "${name}"?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/folders/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Folder berhasil dihapus!');
+                    await fetchFolders();
+                    // If the current view is the deleted folder, switch to "All Media"
+                    if (document.getElementById('current-view-title').innerText === name) {
+                        document.getElementById('current-view-title').innerText = 'All Media';
+                        await fetchAssets();
+                    }
+                } else {
+                    alert('Gagal menghapus folder: ' + JSON.stringify(data.errors));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menghapus folder.');
             }
         }
     </script>

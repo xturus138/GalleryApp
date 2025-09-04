@@ -26,4 +26,34 @@ class FolderController extends Controller
         $folders = Folder::where('created_by', Auth::id())->get();
         return response()->json($folders);
     }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate(['name' => 'required|string|max:255']);
+
+        $folder = Folder::where('id', $id)->where('created_by', Auth::id())->first();
+
+        if (!$folder) {
+            return response()->json(['success' => false, 'message' => 'Folder not found'], 404);
+        }
+
+        $folder->update(['name' => $request->input('name')]);
+
+        return response()->json(['success' => true, 'folder' => $folder], 200);
+    }
+
+    public function destroy($id)
+    {
+        $folder = Folder::where('id', $id)->where('created_by', Auth::id())->first();
+
+        if (!$folder) {
+            return response()->json(['success' => false, 'message' => 'Folder not found'], 404);
+        }
+
+        // Optional: Handle assets in the folder (e.g., set to null or delete)
+        // For now, we'll just delete the folder
+        $folder->delete();
+
+        return response()->json(['success' => true, 'message' => 'Folder deleted successfully'], 200);
+    }
 }

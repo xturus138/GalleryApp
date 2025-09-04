@@ -27,4 +27,6 @@ Route::middleware(['auth'])->group(function () {
     // Rute untuk folder
     Route::post('/folders', [FolderController::class, 'create'])->name('folder.create');
     Route::get('/folders', [FolderController::class, 'list'])->name('folders.list');
+    Route::put('/folders/{id}', [FolderController::class, 'update'])->name('folder.update');
+    Route::delete('/folders/{id}', [FolderController::class, 'destroy'])->name('folder.destroy');
 });
