@@ -8,13 +8,19 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Asset;
 use App\Models\Folder;
 use Illuminate\Support\Str;
+use App\Helpers\SizeHelper;
 
 class AssetController extends Controller
 {
     public function index()
     {
         $folders = Folder::where('created_by', Auth::id())->get();
-        return view('dashboard.gallery', compact('folders'));
+        $totalStorageUsed = Asset::where('uploaded_by', Auth::id())->sum('file_size');
+        $totalStorageFormatted = SizeHelper::formatSize($totalStorageUsed);
+        $totalStorageLimit = '8 GB'; // Hardcoded
+        $totalStorageLimitBytes = 8 * 1000 * 1000 * 1000; // 8GB in bytes
+        $percentageUsed = $totalStorageUsed > 0 ? round(($totalStorageUsed / $totalStorageLimitBytes) * 100, 2) : 0;
+        return view('dashboard.gallery', compact('folders', 'totalStorageFormatted', 'totalStorageLimit', 'percentageUsed'));
     }
 
     public function getAssets(Request $request)
@@ -22,6 +28,11 @@ class AssetController extends Controller
         $assets = Asset::where('uploaded_by', Auth::id())
             ->latest()
             ->get();
+
+        $assets->transform(function ($asset) {
+            $asset->formatted_size = SizeHelper::formatSize($asset->file_size);
+            return $asset;
+        });
 
         return response()->json($assets);
     }
@@ -33,6 +44,11 @@ class AssetController extends Controller
             ->where('folder_id', $folderId)
             ->latest()
             ->get();
+
+        $assets->transform(function ($asset) {
+            $asset->formatted_size = SizeHelper::formatSize($asset->file_size);
+            return $asset;
+        });
 
         return response()->json($assets);
     }

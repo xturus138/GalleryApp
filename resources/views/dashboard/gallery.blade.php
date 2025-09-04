@@ -5,6 +5,9 @@
 @section('content')
     <div class="header">
         <h1><span id="current-view-title">All Media</span></h1>
+        <div class="storage-info">
+            <p>Penyimpanan: {{ $totalStorageFormatted }} / {{ $totalStorageLimit }} ({{ $percentageUsed }}%)</p>
+        </div>
         <div class="action-buttons">
             <button onclick="showUploadModal()">Unggah</button>
         </div>
@@ -377,8 +380,6 @@
                     mediaHtml = `<img src="/file-icon.png" alt="File">`;
                 }
                 
-                const fileSizeInKb = (asset.file_size / 1024).toFixed(2);
-                
                 const assetHtml = `
                     <div class="gallery-item">
                         <div class="dropdown">
@@ -395,7 +396,7 @@
                                 <button class="view-button" onclick="showAssetViewer('${asset.blob_url}', '${asset.file_type}', '${asset.title || asset.original_filename}')">Lihat</button>
                             </div>
                             <div class="asset-details">
-                                <p><strong>Ukuran:</strong> ${fileSizeInKb} KB</p>
+                                <p><strong>Ukuran:</strong> ${asset.formatted_size}</p>
                                 ${asset.caption ? `<p><strong>Keterangan:</strong> ${asset.caption}</p>` : ''}
                             </div>
                         </div>
