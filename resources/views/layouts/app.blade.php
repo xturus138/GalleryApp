@@ -26,6 +26,18 @@
             box-shadow: 2px 0 5px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
+            transition: all 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -250px;
+                height: 100%;
+                z-index: 1500;
+            }
+            .sidebar.show {
+                left: 0;
+            }
         }
         .sidebar-header {
             text-align: center;
@@ -58,7 +70,7 @@
             margin: 0;
             flex-grow: 1;
         }
-        .sidebar-menu li a {
+        .sidebar-menu a {
             display: block;
             padding: 12px 15px;
             text-decoration: none;
@@ -66,12 +78,13 @@
             border-radius: 8px;
             transition: background-color 0.2s;
         }
-        .sidebar-menu li a:hover {
+        .sidebar-menu a:hover {
             background-color: #e9ecef;
         }
         .content {
             flex-grow: 1;
             padding: 40px;
+            transition: margin-left 0.3s ease;
         }
         .header {
             display: flex;
@@ -141,9 +154,12 @@
                 <span class="user-name">{{ Auth::user()->name }}</span>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="/dashboard">🏠 Dashboard</a></li>
-                <li><a href="/folders">📂 Folders</a></li>
-                <li><a href="/search">🔍 Search</a></li>
+                <li><a href="{{ route('dashboard') }}" id="all-media-link">🏠 All Media</a></li>
+                <li><a href="#">🔍 Search</a></li>
+                <li><a href="#" onclick="showCreateFolderModal()">📂 Folder Baru</a></li>
+                <li style="margin-top: 10px; font-weight: bold; color: #495057;">Daftar Folder:</li>
+                <div id="folders-list-container">
+                    </div>
                 <li><a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">🚪 Logout</a></li>
             </ul>
         </aside>

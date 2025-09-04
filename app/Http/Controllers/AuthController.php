@@ -4,10 +4,21 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User; // Pastikan Anda mengimpor model User
+use App\Models\User;
 
 class AuthController extends Controller
 {
+    /**
+     * Tampilkan formulir login.
+     */
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
+
+    /**
+     * Tangani permintaan login.
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -30,6 +41,9 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Log out pengguna.
+     */
     public function logout(Request $request)
     {
         Auth::logout();

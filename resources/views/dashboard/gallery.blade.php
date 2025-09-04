@@ -4,10 +4,10 @@
 
 @section('content')
     <div class="header">
-        <h1>Gallery</h1>
+        <h1><span id="current-view-title">All Media</span></h1>
         <div class="action-buttons">
             <button onclick="showUploadModal()">Unggah</button>
-            <button>Folder Baru</button>
+            <button onclick="showCreateFolderModal()">Folder Baru</button>
         </div>
     </div>
 
@@ -64,16 +64,26 @@
         </div>
     </div>
 
+    <div id="createFolderModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="hideCreateFolderModal()">&times;</span>
+            <h2>Buat Folder Baru</h2>
+            <form id="createFolderForm" action="{{ route('folder.create') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label for="folderName">Nama Folder</label>
+                    <input type="text" name="name" id="folderName" required>
+                </div>
+                <button type="submit">Buat Folder</button>
+            </form>
+        </div>
+    </div>
+
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
         <div class="spinner"></div>
     </div>
 
     <style>
-        .gallery-item-info {
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-        }
         .gallery-item-info .info-top {
             display: flex;
             justify-content: space-between;
@@ -192,6 +202,8 @@
             max-width: 900px;
             position: relative;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            max-height: 90vh; 
+            overflow-y: auto;
         }
         #mediaContainer {
             width: 100%;
@@ -288,16 +300,19 @@
             fetchAssets();
         });
 
-        async function fetchAssets() {
-            // Tampilkan skeleton loader
+        async function fetchAssets(folderId = null) {
             document.getElementById('loading-skeleton').style.display = 'grid';
             document.getElementById('gallery-container').style.display = 'none';
 
+            let url = '{{ route("assets.list") }}';
+            if (folderId) {
+                url = `/assets/folder/${folderId}`; // Perbarui URL untuk filter
+            }
+
             try {
-                const response = await fetch('{{ route("assets.list") }}');
+                const response = await fetch(url);
                 const assets = await response.json();
                 
-                // Sembunyikan skeleton dan tampilkan konten
                 document.getElementById('loading-skeleton').style.display = 'none';
                 document.getElementById('gallery-container').style.display = 'grid';
                 renderAssets(assets);
@@ -309,7 +324,7 @@
 
         function renderAssets(assets) {
             const container = document.getElementById('gallery-container');
-            container.innerHTML = ''; // Hapus konten lama
+            container.innerHTML = '';
             
             if (assets.length === 0) {
                 container.innerHTML = '<p>Belum ada file yang diunggah.</p>';
@@ -353,6 +368,14 @@
 
         function hideUploadModal() {
             document.getElementById('uploadModal').style.display = 'none';
+        }
+
+        function showCreateFolderModal() {
+            document.getElementById('createFolderModal').style.display = 'block';
+        }
+        
+        function hideCreateFolderModal() {
+            document.getElementById('createFolderModal').style.display = 'none';
         }
 
         function showAssetViewer(url, fileType, filename) {
@@ -407,6 +430,7 @@
             
             formData.append('title', titleInput.value);
             formData.append('caption', captionInput.value);
+            formData.append('folder', document.getElementById('folder').value);
 
             try {
                 const response = await fetch(form.action, {
@@ -433,5 +457,83 @@
                 document.getElementById('loadingOverlay').style.display = 'none';
             }
         });
+
+        // Event listener untuk form buat folder
+        document.getElementById('createFolderForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            const form = event.target;
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('{{ route("folder.create") }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Folder berhasil dibuat!');
+                    hideCreateFolderModal();
+                    await fetchAssets();
+                    await fetchFolders();
+                } else {
+                    alert('Gagal membuat folder: ' + JSON.stringify(data.errors));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat membuat folder.');
+            } finally {
+                document.getElementById('loadingOverlay').style.display = 'none';
+            }
+        });
+        
+        async function fetchFolders() {
+            try {
+                const response = await fetch('{{ route("folders.list") }}');
+                const folders = await response.json();
+                const folderSelect = document.getElementById('folder');
+                folderSelect.innerHTML = '<option value="none">Tidak ada folder</option>';
+                const folderSidebar = document.getElementById('folders-list-container');
+                folderSidebar.innerHTML = '';
+                
+                folders.forEach(folder => {
+                    // Update dropdown list
+                    const option = document.createElement('option');
+                    option.value = folder.id;
+                    option.innerText = folder.name;
+                    folderSelect.appendChild(option);
+
+                    // Update sidebar list
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = '#';
+                    a.innerText = folder.name;
+                    a.onclick = (e) => {
+                        e.preventDefault();
+                        document.getElementById('current-view-title').innerText = folder.name;
+                        fetchAssets(folder.id);
+                    };
+                    li.appendChild(a);
+                    folderSidebar.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Error fetching folders:', error);
+            }
+        }
+        
+        // Memuat semua aset dan folder saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAssets();
+            fetchFolders();
+        });
+
+        // Perbarui URL fetch di fungsi fetchAssets
+        // ... (fungsi lainnya)
     </script>
 @endsection
