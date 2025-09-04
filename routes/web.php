@@ -20,6 +20,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/assets', [AssetController::class, 'getAssets'])->name('assets.list');
     Route::get('/assets/folder/{folderId}', [AssetController::class, 'getAssetsByFolder'])->name('assets.folder');
     Route::post('/upload', [AssetController::class, 'upload'])->name('asset.upload');
+    Route::get('/assets/{id}', [AssetController::class, 'show'])->name('assets.show');
+    Route::put('/assets/{id}', [AssetController::class, 'update'])->name('assets.update');
+    Route::delete('/assets/{id}', [AssetController::class, 'destroy'])->name('assets.destroy');
 
     // Rute untuk folder
     Route::post('/folders', [FolderController::class, 'create'])->name('folder.create');

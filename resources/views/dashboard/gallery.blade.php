@@ -106,8 +106,45 @@
         .view-button:hover {
             background-color: #6366f1;
         }
+        .dropdown-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            min-width: 100px;
+        }
+        .dropdown-menu button {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .dropdown-menu button:hover {
+            background-color: #f8f9fa;
+        }
         .gallery-item {
             position: relative;
+        }
+        .dropdown {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
         }
         .gallery-item img,
         .gallery-item video {
@@ -344,6 +381,13 @@
                 
                 const assetHtml = `
                     <div class="gallery-item">
+                        <div class="dropdown">
+                            <button class="dropdown-toggle" onclick="toggleDropdown('${asset.id}')">&#8230;</button>
+                            <div class="dropdown-menu" id="dropdown-${asset.id}" style="display: none;">
+                                <button onclick="showEditModal('${asset.id}', '${asset.title || ''}', '${asset.caption || ''}', '${asset.folder_id || 'none'}')">Edit</button>
+                                <button onclick="deleteAsset('${asset.id}')">Hapus</button>
+                            </div>
+                        </div>
                         ${mediaHtml}
                         <div class="gallery-item-info">
                             <div class="info-top">
@@ -551,5 +595,139 @@
 
         // Perbarui URL fetch di fungsi fetchAssets
         // ... (fungsi lainnya)
+
+        function toggleDropdown(id) {
+            const dropdown = document.getElementById(`dropdown-${id}`);
+            const isVisible = dropdown.style.display === 'block';
+            // Hide all dropdowns first
+            document.querySelectorAll('.dropdown-menu').forEach(menu => menu.style.display = 'none');
+            // Toggle the clicked one
+            dropdown.style.display = isVisible ? 'none' : 'block';
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.dropdown')) {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => menu.style.display = 'none');
+            }
+        });
+
+        function showEditModal(id, title, caption, folderId) {
+            const modalContent = `
+                <div class="modal-content">
+                    <span class="close-button" onclick="hideEditModal()">&times;</span>
+                    <h2>Edit Media</h2>
+                    <form id="editAssetForm">
+                        <input type="hidden" name="id" value="${id}">
+                        <div class="form-group">
+                            <label for="editTitle">Judul</label>
+                            <input type="text" id="editTitle" name="title" value="${title}">
+                        </div>
+                        <div class="form-group">
+                            <label for="editCaption">Keterangan</label>
+                            <textarea id="editCaption" name="caption">${caption}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="editFolder">Folder</label>
+                            <select id="editFolder" name="folder_id">
+                                <option value="none">Tidak ada folder</option>
+                            </select>
+                        </div>
+                        <button type="submit">Simpan Perubahan</button>
+                    </form>
+                </div>
+            `;
+
+            const modal = document.createElement('div');
+            modal.id = 'editModal';
+            modal.className = 'modal';
+            modal.innerHTML = modalContent;
+            document.body.appendChild(modal);
+
+            // Populate folder options
+            const editFolderSelect = document.getElementById('editFolder');
+            allFolders.forEach(folder => {
+                const option = document.createElement('option');
+                option.value = folder.id;
+                option.textContent = folder.name;
+                if (folder.id === folderId) {
+                    option.selected = true;
+                }
+                editFolderSelect.appendChild(option);
+            });
+
+            modal.style.display = 'block';
+
+            document.getElementById('editAssetForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(event.target);
+                const assetId = formData.get('id');
+                const title = formData.get('title');
+                const caption = formData.get('caption');
+                let folder_id = formData.get('folder_id');
+                if (folder_id === 'none') {
+                    folder_id = null;
+                }
+
+                try {
+                    const response = await fetch(`/assets/${assetId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                        },
+                        body: JSON.stringify({ title, caption, folder_id })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert('Media berhasil diperbarui!');
+                        hideEditModal();
+                        await fetchAssets();
+                    } else {
+                        alert('Gagal memperbarui media: ' + JSON.stringify(data.errors));
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat memperbarui media.');
+                }
+            });
+        }
+
+        function hideEditModal() {
+            const modal = document.getElementById('editModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+
+        async function deleteAsset(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus media ini?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/assets/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('Media berhasil dihapus!');
+                    await fetchAssets();
+                } else {
+                    alert('Gagal menghapus media: ' + JSON.stringify(data.errors));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menghapus media.');
+            }
+        }
     </script>
 @endsection

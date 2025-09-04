@@ -81,4 +81,50 @@ class AssetController extends Controller
 
         return response()->json(['success' => true, 'assets' => $uploadedAssets], 200);
     }
+
+    public function show($id)
+    {
+        $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
+
+        if (!$asset) {
+            return response()->json(['error' => 'Asset not found'], 404);
+        }
+
+        return response()->json($asset);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
+
+        if (!$asset) {
+            return response()->json(['error' => 'Asset not found'], 404);
+        }
+
+        $request->validate([
+            'title' => 'nullable|string|max:255',
+            'caption' => 'nullable|string',
+            'folder_id' => 'nullable|uuid|exists:folders,id',
+        ]);
+
+        $asset->update($request->only(['title', 'caption', 'folder_id']));
+
+        return response()->json(['success' => true, 'asset' => $asset]);
+    }
+
+    public function destroy($id)
+    {
+        $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
+
+        if (!$asset) {
+            return response()->json(['error' => 'Asset not found'], 404);
+        }
+
+        // Delete the file from storage
+        Storage::disk('public')->delete(str_replace('/storage/', '', $asset->blob_url));
+
+        $asset->delete();
+
+        return response()->json(['success' => true, 'message' => 'Asset deleted successfully']);
+    }
 }
