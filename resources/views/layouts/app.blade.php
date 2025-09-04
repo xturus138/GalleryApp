@@ -166,6 +166,38 @@
             font-size: 0.8rem;
             color: #6c757d;
         }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #dc3545;
+            animation: spin 1s ease infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logout-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -185,16 +217,35 @@
                 <div id="folders-list-container">
                     </div>
             </ul>
-            <a href="{{ route('logout') }}" class="logout-button" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">🚪 Logout</a>
-        </aside>
+    <a href="{{ route('logout') }}" class="logout-button" id="logoutLink">🚪 Logout</a>
+</aside>
 
-        <div class="content">
-            @yield('content')
-        </div>
+<div class="content">
+    @yield('content')
+</div>
     </div>
     
     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
         @csrf
     </form>
+
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <script>
+        document.getElementById('logoutLink').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            const logoutLink = this;
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            logoutLink.disabled = true;
+            logoutLink.textContent = 'Logging out...';
+            loadingOverlay.style.display = 'flex';
+
+            document.getElementById('logout-form').submit();
+        });
+    </script>
 </body>
 </html>

@@ -736,6 +736,9 @@
                 return;
             }
 
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
+
             try {
                 const response = await fetch(`/assets/${id}`, {
                     method: 'DELETE',
@@ -755,6 +758,8 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Terjadi kesalahan saat menghapus media.');
+            } finally {
+                loadingOverlay.style.display = 'none';
             }
         }
 
@@ -827,6 +832,9 @@
                 return;
             }
 
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.style.display = 'flex';
+
             try {
                 const response = await fetch(`/folders/${id}`, {
                     method: 'DELETE',
@@ -851,6 +859,8 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Terjadi kesalahan saat menghapus folder.');
+            } finally {
+                loadingOverlay.style.display = 'none';
             }
         }
     </script>
