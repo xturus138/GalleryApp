@@ -28,6 +28,7 @@
             flex-direction: column;
             transition: all 0.3s ease;
             position: relative;
+            animation: slideInLeft 0.5s ease-out;
         }
         @media (max-width: 768px) {
             .sidebar {
@@ -110,6 +111,7 @@
             flex-grow: 1;
             padding: 40px;
             transition: margin-left 0.3s ease;
+            animation: slideInRight 0.5s ease-out 0.2s both;
         }
         .header {
             display: flex;
@@ -192,6 +194,16 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         .logout-button:disabled {

@@ -27,7 +27,7 @@
     </div>
 
     <div id="gallery-container" class="gallery-grid" style="display: none;">
-        </div>
+    </div>
     
     <div id="uploadModal" class="modal">
         <div class="modal-content">
@@ -142,6 +142,13 @@
         }
         .gallery-item {
             position: relative;
+            animation: fadeInUp 0.6s ease-out both;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
         }
         .dropdown {
             position: absolute;
@@ -332,6 +339,11 @@
             50% { background-color: #f2f5f8; }
             100% { background-color: #e2e8f0; }
         }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 
     <script>
@@ -370,18 +382,18 @@
                 return;
             }
 
-            assets.forEach(asset => {
+            assets.forEach((asset, index) => {
                 let mediaHtml = '';
                 if (asset.file_type.startsWith('image/')) {
                     mediaHtml = `<img src="${asset.blob_url}" alt="${asset.title || asset.original_filename}">`;
                 } else if (asset.file_type.startsWith('video/')) {
-                    mediaHtml = `<video poster="/video-thumbnail.png" src="${asset.blob_url}"></video>`;
+                    mediaHtml = `<video poster="/video-thumbnail.png" src="${asset.blob_url}" controls></video>`;
                 } else {
                     mediaHtml = `<img src="/file-icon.png" alt="File">`;
                 }
                 
                 const assetHtml = `
-                    <div class="gallery-item">
+                    <div class="gallery-item" style="animation-delay: ${index * 0.1}s;">
                         <div class="dropdown">
                             <button class="dropdown-toggle" onclick="toggleDropdown('${asset.id}')">&#8230;</button>
                             <div class="dropdown-menu" id="dropdown-${asset.id}" style="display: none;">

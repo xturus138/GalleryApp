@@ -34,6 +34,7 @@
             border-radius: 12px;
             box-shadow: var(--shadow-light);
             text-align: center;
+            animation: fadeInUp 0.8s ease-out;
         }
 
         .login-container h2 {
@@ -116,6 +117,11 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .btn:disabled {
