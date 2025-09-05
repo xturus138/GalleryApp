@@ -533,11 +533,14 @@
             currentFolderId = folderId;
             currentAssetPage = page;
 
+            // Determine per_page based on screen width
+            const perPage = window.innerWidth < 768 ? 5 : 21;
+
             let url = '{{ route("assets.list") }}';
             if (folderId) {
-                url = `/assets/folder/${folderId}?page=${page}`;
+                url = `/assets/folder/${folderId}?page=${page}&per_page=${perPage}`;
             } else {
-                url = `/assets?page=${page}`;
+                url = `/assets?page=${page}&per_page=${perPage}`;
             }
 
             try {

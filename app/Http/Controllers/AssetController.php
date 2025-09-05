@@ -29,7 +29,7 @@ class AssetController extends Controller
     public function getAssets(Request $request)
     {
         $page = $request->query('page', 1);
-        $perPage = 14; // updated per latest user request
+        $perPage = $request->query('per_page', 21); // default 21 items per page
         $assets = Asset::where('uploaded_by', Auth::id())
             ->latest()
             ->paginate($perPage, ['*'], 'page', $page);
@@ -48,7 +48,7 @@ class AssetController extends Controller
     public function getAssetsByFolder(Request $request, $folderId)
     {
         $page = $request->query('page', 1);
-        $perPage = 14; // updated per latest user request
+        $perPage = $request->query('per_page', 21); // default 21 items per page
         $assets = Asset::where('uploaded_by', Auth::id())
             ->where('folder_id', $folderId)
             ->latest()
