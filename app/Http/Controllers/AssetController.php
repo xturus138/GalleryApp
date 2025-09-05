@@ -221,7 +221,7 @@ class AssetController extends Controller
             return response()->json(['error' => 'Asset not found'], 404);
         }
 
-        $comments = $asset->comments()->with('user')->latest()->get();
+        $comments = $asset->comments()->with('user')->oldest()->get();
         \Log::info('Found ' . $comments->count() . ' comments');
 
         return response()->json($comments);
