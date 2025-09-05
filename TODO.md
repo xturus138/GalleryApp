@@ -1,23 +1,28 @@
-# Dynamic Pagination for Gallery Assets
+# TODO - Comments Feature for Assets
 
-## Tasks
+## Completed Tasks
 
--   [x] Keep gallery grid responsive with same card sizes
--   [x] Update pagination perPage to 9 (3 rows x 3 columns)
--   [x] Update both getAssets and getAssetsByFolder methods
-
-## Implementation Details
-
--   Kept original responsive grid CSS: repeat(auto-fill, minmax(200px, 1fr))
--   Changed perPage to 9 to fill approximately 3 rows when 3 columns are displayed
--   Pagination occurs when 3 columns are "full" (9 items)
-
-## Files Modified
-
--   app/Http/Controllers/AssetController.php (perPage values)
+-   [x] Create migration for asset_comments table
+-   [x] Create Comment model with relationships
+-   [x] Update Asset model to include comments relationship
+-   [x] Add comment routes to web.php
+-   [x] Add comment methods to AssetController (getComments, storeComment)
+-   [x] Update gallery.blade.php to display comments section
+-   [x] Add CSS for comments styling
+-   [x] Add JavaScript for loading and submitting comments
+-   [x] Run migrations and seeders
 
 ## Features Implemented
 
--   Responsive gallery grid with same card sizes
--   Dynamic pagination based on 3 columns being full (9 items per page)
--   Maintains visual consistency with previous layout
+-   Each asset can have multiple comments
+-   Comments are displayed only when opening an asset in the viewer modal
+-   Users can add new comments via a form in the asset viewer modal
+-   Comments show user name and timestamp
+-   Comments are loaded asynchronously
+-   No comments are shown in the gallery grid to improve performance and clarity
+
+## Next Steps
+
+-   Test the feature by opening assets and adding comments
+-   Ensure proper error handling and validation
+-   Consider adding delete/edit comment functionality if needed

@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use App\Models\Asset;
 use App\Models\Folder;
+use App\Models\AssetHeart;
+use App\Models\Comment;
 use Illuminate\Support\Str;
 use App\Helpers\SizeHelper;
 
@@ -33,6 +36,8 @@ class AssetController extends Controller
 
         $assets->getCollection()->transform(function ($asset) {
             $asset->formatted_size = SizeHelper::formatSize($asset->file_size);
+            $asset->likes_count = $asset->hearts()->count();
+            $asset->is_liked_by_user = $asset->isLikedBy(Auth::user());
             return $asset;
         });
 
@@ -51,6 +56,8 @@ class AssetController extends Controller
 
         $assets->getCollection()->transform(function ($asset) {
             $asset->formatted_size = SizeHelper::formatSize($asset->file_size);
+            $asset->likes_count = $asset->hearts()->count();
+            $asset->is_liked_by_user = $asset->isLikedBy(Auth::user());
             return $asset;
         });
 
@@ -159,5 +166,82 @@ class AssetController extends Controller
         $asset->delete();
 
         return response()->json(['success' => true, 'message' => 'Asset deleted successfully']);
+    }
+
+    public function like($id)
+    {
+        $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
+
+        if (!$asset) {
+            return response()->json(['error' => 'Asset not found'], 404);
+        }
+
+        $existingLike = AssetHeart::where('asset_id', $id)->where('user_id', Auth::id())->first();
+
+        if ($existingLike) {
+            return response()->json(['error' => 'Already liked'], 400);
+        }
+
+        AssetHeart::create([
+            'asset_id' => $id,
+            'user_id' => Auth::id(),
+        ]);
+
+        return response()->json(['success' => true, 'likes_count' => $asset->fresh()->likes_count]);
+    }
+
+    public function unlike($id)
+    {
+        $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
+
+        if (!$asset) {
+            return response()->json(['error' => 'Asset not found'], 404);
+        }
+
+        $like = AssetHeart::where('asset_id', $id)->where('user_id', Auth::id())->first();
+
+        if (!$like) {
+            return response()->json(['error' => 'Not liked yet'], 400);
+        }
+
+        $like->delete();
+
+        return response()->json(['success' => true, 'likes_count' => $asset->fresh()->likes_count]);
+    }
+
+    public function getComments($id)
+    {
+        $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
+
+        if (!$asset) {
+            return response()->json(['error' => 'Asset not found'], 404);
+        }
+
+        $comments = $asset->comments()->with('user')->latest()->get();
+
+        return response()->json($comments);
+    }
+
+    public function storeComment(Request $request, $id)
+    {
+        $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
+
+        if (!$asset) {
+            return response()->json(['error' => 'Asset not found'], 404);
+        }
+
+        $request->validate([
+            'comment' => 'required|string|max:1000',
+        ]);
+
+        $comment = Comment::create([
+            'asset_id' => $id,
+            'user_id' => Auth::id(),
+            'comment' => $request->comment,
+        ]);
+
+        $comment->load('user');
+
+        return response()->json(['success' => true, 'comment' => $comment]);
     }
 }

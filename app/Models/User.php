@@ -66,4 +66,9 @@ class User extends Authenticatable
             $model->id = Str::uuid();
         });
     }
+
+    public function likedAssets()
+    {
+        return $this->belongsToMany(Asset::class, 'asset_hearts');
+    }
 }

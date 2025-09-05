@@ -25,6 +25,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/assets/{id}', [AssetController::class, 'show'])->name('assets.show');
     Route::put('/assets/{id}', [AssetController::class, 'update'])->name('assets.update');
     Route::delete('/assets/{id}', [AssetController::class, 'destroy'])->name('assets.destroy');
+    Route::post('/assets/{id}/like', [AssetController::class, 'like'])->name('assets.like');
+    Route::delete('/assets/{id}/like', [AssetController::class, 'unlike'])->name('assets.unlike');
+
+    // Rute untuk komentar
+    Route::get('/assets/{id}/comments', [AssetController::class, 'getComments'])->name('assets.comments');
+    Route::post('/assets/{id}/comments', [AssetController::class, 'storeComment'])->name('assets.comments.store');
 
     // Rute untuk folder
     Route::post('/folders', [FolderController::class, 'create'])->name('folder.create');

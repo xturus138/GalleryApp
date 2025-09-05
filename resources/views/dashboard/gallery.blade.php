@@ -77,6 +77,14 @@
             <span class="close-button" onclick="hideAssetViewer()">&times;</span>
             <div id="assetViewerTitle" style="font-weight: bold; margin-bottom: 10px; color: black;"></div>
             <div id="mediaContainer"></div>
+            <div id="assetViewerComments" class="comments-section" style="margin-top: 20px;">
+                <h4>Komentar</h4>
+                <div id="commentsList" class="comments-list"></div>
+                <form id="commentForm" class="comment-form">
+                    <input type="text" placeholder="Tambahkan komentar..." required maxlength="1000">
+                    <button type="submit">Kirim</button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -126,6 +134,25 @@
         }
         .view-button:hover {
             background-color: #6366f1;
+        }
+        .like-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .like-button:hover .like-icon {
+            transform: scale(1.2);
+        }
+        .like-icon {
+            transition: transform 0.2s, color 0.2s;
+        }
+        .like-count {
+            font-size: 0.9rem;
+            color: #6c757d;
         }
         .dropdown-toggle {
             background: none;
@@ -420,6 +447,47 @@
             gap: 5px;
             align-items: center;
         }
+        .comments-section {
+            margin-top: 10px;
+        }
+        .comments-list {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .comment {
+            background-color: #f8f9fa;
+            padding: 5px 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        .comment strong {
+            color: #495057;
+        }
+        .comment-form {
+            display: flex;
+            gap: 5px;
+        }
+        .comment-form input {
+            flex: 1;
+            padding: 5px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+        .comment-form button {
+            padding: 5px 10px;
+            background-color: #4a5568;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .comment-form button:hover {
+            background-color: #6366f1;
+        }
         .pagination-ellipsis {
             padding: 0 5px;
             color: #495057;
@@ -482,6 +550,8 @@
                     mediaHtml = `<img src="/file-icon.png" alt="File">`;
                 }
 
+
+
                 const assetHtml = `
                     <div class="gallery-item" style="animation-delay: ${index * 0.1}s;">
                         <div class="dropdown">
@@ -495,11 +565,18 @@
                         <div class="gallery-item-info">
                             <div class="info-top">
                                 <h4 class="truncate">${asset.title || asset.original_filename}</h4>
-                                <button class="view-button" onclick="showAssetViewer('${asset.blob_url}', '${asset.file_type}', '${asset.title || asset.original_filename}')">Lihat</button>
+                                <button class="view-button" onclick="showAssetViewer('${asset.blob_url}', '${asset.file_type}', '${asset.title || asset.original_filename}', '${asset.id}')">Lihat</button>
                             </div>
                             <div class="asset-details">
                                 <p><strong>Ukuran:</strong> ${asset.formatted_size}</p>
                                 ${asset.caption ? `<p><strong>Keterangan:</strong> ${asset.caption}</p>` : ''}
+                                <p>
+                                    <button class="like-button" data-asset-id="${asset.id}" aria-label="Like button">
+                                        <span class="like-icon" style="color: ${asset.is_liked_by_user ? 'red' : 'gray'};">&#10084;</span>
+                                        <span class="like-count">${asset.likes_count}</span>
+                                    </button>
+                                </p>
+
                             </div>
                         </div>
                     </div>
@@ -569,10 +646,10 @@
             document.getElementById('createFolderModal').style.display = 'none';
         }
 
-        function showAssetViewer(url, fileType, filename) {
+        function showAssetViewer(url, fileType, filename, assetId) {
             const mediaContainer = document.getElementById('mediaContainer');
             mediaContainer.innerHTML = '';
-            
+
             document.getElementById('assetViewerTitle').innerText = filename;
 
             if (fileType.startsWith('image/')) {
@@ -588,12 +665,20 @@
                 mediaContainer.appendChild(video);
             }
 
+            // Load comments for this asset
+            loadComments(assetId);
+
+            // Set asset ID on modal for comment submission
+            document.getElementById('assetViewerModal').setAttribute('data-asset-id', assetId);
+
             document.getElementById('assetViewerModal').style.display = 'block';
         }
 
         function hideAssetViewer() {
             const mediaContainer = document.getElementById('mediaContainer');
             mediaContainer.innerHTML = '';
+            // Clear comments
+            document.getElementById('commentsList').innerHTML = '';
             document.getElementById('assetViewerModal').style.display = 'none';
         }
 
@@ -882,6 +967,41 @@
             dropdown.style.display = isVisible ? 'none' : 'block';
         }
 
+        // Handle like/unlike functionality
+        document.addEventListener('click', function(event) {
+            if (event.target.closest('.like-button')) {
+                const button = event.target.closest('.like-button');
+                const assetId = button.getAttribute('data-asset-id');
+                const likeIcon = button.querySelector('.like-icon');
+                const likeCount = button.querySelector('.like-count');
+
+                const isLiked = likeIcon.style.color === 'red';
+                const url = isLiked ? `/assets/${assetId}/like` : `/assets/${assetId}/like`;
+                const method = isLiked ? 'DELETE' : 'POST';
+
+                fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        likeIcon.style.color = isLiked ? 'gray' : 'red';
+                        likeCount.textContent = data.likes_count;
+                    } else {
+                        alert('Error: ' + (data.error || 'Something went wrong'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat memproses like.');
+                });
+            }
+        });
+
         // Close dropdowns when clicking outside
         document.addEventListener('click', function(event) {
             if (!event.target.closest('.dropdown')) {
@@ -1112,5 +1232,69 @@
                 loadingOverlay.style.display = 'none';
             }
         }
+
+        // Comments functionality
+        async function loadComments(assetId) {
+            try {
+                const response = await fetch(`/assets/${assetId}/comments`);
+                const comments = await response.json();
+                renderComments(assetId, comments);
+            } catch (error) {
+                console.error('Error loading comments:', error);
+            }
+        }
+
+        function renderComments(assetId, comments) {
+            const commentsList = document.getElementById('commentsList');
+            commentsList.innerHTML = '';
+
+            comments.forEach(comment => {
+                const commentHtml = `
+                    <div class="comment">
+                        <strong>${comment.user.name}:</strong> ${comment.comment}
+                        <small style="color: #6c757d;">${new Date(comment.created_at).toLocaleString()}</small>
+                    </div>
+                `;
+                commentsList.insertAdjacentHTML('beforeend', commentHtml);
+            });
+        }
+
+        // Handle comment form submission
+        document.addEventListener('submit', async function(event) {
+            if (event.target.id === 'commentForm') {
+                event.preventDefault();
+                const form = event.target;
+                const input = form.querySelector('input');
+                const commentText = input.value.trim();
+
+                if (!commentText) return;
+
+                // Get asset ID from the current asset viewer
+                const assetId = document.getElementById('assetViewerModal').getAttribute('data-asset-id');
+
+                try {
+                    const response = await fetch(`/assets/${assetId}/comments`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                        },
+                        body: JSON.stringify({ comment: commentText })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        input.value = '';
+                        loadComments(assetId); // Reload comments
+                    } else {
+                        alert('Gagal menambahkan komentar.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat menambahkan komentar.');
+                }
+            }
+        });
     </script>
 @endsection
