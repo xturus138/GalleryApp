@@ -36,7 +36,13 @@ class ProfileController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'pin' => 'nullable|string|max:255',
+            'photo' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('profile_photos', 'public');
+            $validatedData['photo'] = $photoPath;
+        }
 
         $user->update($validatedData);
 

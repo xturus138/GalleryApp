@@ -250,11 +250,12 @@
             <div class="sidebar-header">
             </div>
             <div class="user-info">
-                <img src="/placeholder-user.jpg" alt="User Avatar">
+                <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : '/placeholder-user.jpg' }}" alt="User Avatar">
                 <span class="user-name">{{ Auth::user()->name }}</span>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="{{ route('dashboard') }}" id="all-media-link">🏠 All Media</a></li>
+                <li><a href="{{ route('profile.show') }}">👤 Profile</a></li>
                 <li><a href="#" onclick="showCreateFolderModal()">📂 Folder Baru</a></li>
                 <li style="margin-top: 10px; font-weight: bold; color: #495057;">Daftar Folder:</li>
                 <input type="text" class="search-input" placeholder="🔍 Search folders..." id="folder-search">
