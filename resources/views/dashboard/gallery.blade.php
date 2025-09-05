@@ -31,11 +31,18 @@
 
     <!-- Pagination for Assets -->
     <div id="assets-pagination" class="pagination-container" style="display: none;">
-        <button id="assets-prev" class="pagination-btn">Previous</button>
-        <span id="assets-page-info" class="page-info"></span>
-        <button id="assets-next" class="pagination-btn">Next</button>
+        <button id="assets-prev" class="pagination-btn"><</button>
+        <div id="assets-page-numbers" class="page-numbers"></div>
+        <button id="assets-next" class="pagination-btn">></button>
     </div>
-    
+
+    <!-- Pagination for Folders -->
+    <div id="folders-pagination" class="pagination-container" style="display: none;">
+        <button id="folders-prev" class="pagination-btn"><</button>
+        <div id="folders-page-numbers" class="page-numbers"></div>
+        <button id="folders-next" class="pagination-btn">></button>
+    </div>
+
     <div id="uploadModal" class="modal">
         <div class="modal-content">
             <span class="close-button" onclick="hideUploadModal()">&times;</span>
@@ -362,7 +369,7 @@
             padding: 10px;
         }
         .pagination-btn {
-            padding: 8px 16px;
+            padding: 8px 12px;
             background-color: #007bff;
             color: white;
             border: none;
@@ -370,6 +377,7 @@
             cursor: pointer;
             font-size: 0.9rem;
             transition: background-color 0.3s;
+            min-width: 40px;
         }
         .pagination-btn:hover:not(:disabled) {
             background-color: #0056b3;
@@ -378,8 +386,13 @@
             background-color: #6c757d;
             cursor: not-allowed;
         }
-        .page-info {
-            font-size: 0.9rem;
+        .page-numbers {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        .pagination-ellipsis {
+            padding: 0 5px;
             color: #495057;
             font-weight: 500;
         }
@@ -475,16 +488,38 @@
 
         function renderAssetsPagination(paginationData) {
             const paginationContainer = document.getElementById('assets-pagination');
-            const pageInfo = document.getElementById('assets-page-info');
+            // const pageInfo = document.getElementById('assets-page-info');
+            const pageNumbersContainer = document.getElementById('assets-page-numbers');
             const prevBtn = document.getElementById('assets-prev');
             const nextBtn = document.getElementById('assets-next');
 
-            pageInfo.textContent = `Page ${paginationData.current_page} of ${paginationData.last_page}`;
+            // pageInfo.textContent = `Page ${paginationData.current_page} of ${paginationData.last_page}`;
             prevBtn.disabled = paginationData.current_page <= 1;
             nextBtn.disabled = paginationData.current_page >= paginationData.last_page;
 
             prevBtn.onclick = () => fetchAssets(currentFolderId, paginationData.current_page - 1);
             nextBtn.onclick = () => fetchAssets(currentFolderId, paginationData.current_page + 1);
+
+            // Clear previous page numbers
+            pageNumbersContainer.innerHTML = '';
+
+            const current = paginationData.current_page;
+            const last = paginationData.last_page;
+
+            // Add page numbers
+            const pages = [];
+            for (let i = 1; i <= last; i++) pages.push(i);
+
+            pages.forEach(page => {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = page;
+                pageBtn.className = 'pagination-btn';
+                if (page === current) {
+                    pageBtn.disabled = true;
+                }
+                pageBtn.onclick = () => fetchAssets(currentFolderId, page);
+                pageNumbersContainer.appendChild(pageBtn);
+            });
 
             paginationContainer.style.display = 'flex';
         }
@@ -705,16 +740,38 @@
 
         function renderFoldersPagination(paginationData) {
             const paginationContainer = document.getElementById('folders-pagination');
-            const pageInfo = document.getElementById('folders-page-info');
+            // const pageInfo = document.getElementById('folders-page-info');
+            const pageNumbersContainer = document.getElementById('folders-page-numbers');
             const prevBtn = document.getElementById('folders-prev');
             const nextBtn = document.getElementById('folders-next');
 
-            pageInfo.textContent = `Page ${paginationData.current_page} of ${paginationData.last_page}`;
+            // pageInfo.textContent = `Page ${paginationData.current_page} of ${paginationData.last_page}`;
             prevBtn.disabled = paginationData.current_page <= 1;
             nextBtn.disabled = paginationData.current_page >= paginationData.last_page;
 
             prevBtn.onclick = () => fetchFolders(paginationData.current_page - 1);
             nextBtn.onclick = () => fetchFolders(paginationData.current_page + 1);
+
+            // Clear previous page numbers
+            pageNumbersContainer.innerHTML = '';
+
+            const current = paginationData.current_page;
+            const last = paginationData.last_page;
+
+            // Add page numbers
+            const pages = [];
+            for (let i = 1; i <= last; i++) pages.push(i);
+
+            pages.forEach(page => {
+                const pageBtn = document.createElement('button');
+                pageBtn.textContent = page;
+                pageBtn.className = 'pagination-btn';
+                if (page === current) {
+                    pageBtn.disabled = true;
+                }
+                pageBtn.onclick = () => fetchFolders(page);
+                pageNumbersContainer.appendChild(pageBtn);
+            });
 
             paginationContainer.style.display = 'flex';
         }

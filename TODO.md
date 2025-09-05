@@ -1,45 +1,39 @@
-# Pagination Feature for Gallery App
+# Change Pagination Format to Numbered Pages
 
 ## Information Gathered
 
--   Project: Laravel Gallery App with assets (photos/videos) and folders.
--   Current: No pagination, loads all assets/folders at once.
--   Technologies: Laravel, Blade, JavaScript (fetch API).
--   Controllers: AssetController, FolderController.
--   Views: gallery.blade.php (main gallery view).
--   Data loading: AJAX via fetchAssets() and fetchFolders().
+-   Project: Laravel Gallery App with existing pagination.
+-   Current: Pagination shows "Page X of Y" with Previous/Next buttons.
+-   New: Numbered pages like 1 2 3 ... 10 with ellipsis.
+-   Technologies: Laravel, Blade, JavaScript.
+-   Views: gallery.blade.php, layouts/app.blade.php.
 
 ## Plan
 
-1. **Backend Changes** ✅
+1. **HTML Updates** ✅
 
-    - ✅ Modify AssetController::getAssets() to use paginate(10).
-    - ✅ Modify AssetController::getAssetsByFolder() to use paginate(10).
-    - ✅ Modify FolderController::list() to use paginate(5).
-    - ✅ Update routes to accept page parameters.
+    - ✅ Update assets pagination container in gallery.blade.php.
+    - ✅ Update folders pagination container in app.blade.php.
+    - ✅ Replace page-info span with page-numbers div.
 
-2. **Frontend Changes** ✅
+2. **JavaScript Changes** ✅
 
-    - ✅ Update fetchAssets() to handle paginated response and page parameter.
-    - ✅ Update fetchFolders() to handle paginated response and page parameter.
-    - ✅ Add pagination UI components (prev/next buttons, page numbers).
-    - ✅ Update renderAssets() and renderFolders() to work with paginated data.
+    - ✅ Modify renderAssetsPagination() to generate numbered buttons with ellipsis.
+    - ✅ Modify renderFoldersPagination() to generate numbered buttons with ellipsis.
+    - ✅ Handle click events for page navigation.
 
-3. **View Updates** ✅
+3. **CSS Updates** ✅
 
-    - ✅ Add pagination controls in gallery.blade.php.
-    - ✅ Style pagination buttons consistently with app design.
+    - ✅ Add styles for page-numbers container.
+    - ✅ Add styles for pagination-ellipsis.
 
 ## Dependent Files
 
--   app/Http/Controllers/AssetController.php
--   app/Http/Controllers/FolderController.php
--   routes/web.php
 -   resources/views/dashboard/gallery.blade.php
+-   resources/views/layouts/app.blade.php
 
 ## Followup Steps
 
--   Test pagination with sample data.
--   Ensure smooth loading between pages.
--   Handle edge cases (no data, single page).
--   Optimize queries if needed.
+-   Test pagination navigation.
+-   Ensure ellipsis works for many pages.
+-   Verify disabled state for current page.
