@@ -222,6 +222,16 @@
         .hamburger-menu {
             display: none;
             cursor: pointer;
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1600;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
         }
 
         @media (max-width: 768px) {
@@ -265,10 +275,6 @@
             }
             .hamburger-menu {
                 display: block;
-                position: fixed;
-                top: 15px;
-                left: 15px;
-                z-index: 1600;
             }
         }
     </style>

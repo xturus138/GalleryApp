@@ -542,8 +542,9 @@
             currentFolderId = folderId;
             currentAssetPage = page;
 
-            // Determine per_page based on screen width
-            const perPage = window.innerWidth < 768 ? 5 : 21;
+            // Determine per_page based on screen width - more robust detection
+            const isMobile = window.innerWidth < 768 || window.matchMedia('(max-width: 767px)').matches;
+            const perPage = isMobile ? 5 : 21;
 
             let url = '{{ route("assets.list") }}';
             if (folderId) {
@@ -901,6 +902,12 @@
                     e.preventDefault();
                     document.getElementById('current-view-title').innerText = folder.name;
                     fetchAssets(folder.id, 1); // Reset to page 1 when switching folders
+
+                    // Auto-close menu on mobile after clicking folder
+                    if (window.innerWidth < 768) {
+                        document.querySelector('.sidebar').classList.remove('show');
+                        document.querySelector('.sidebar-overlay').classList.remove('show');
+                    }
                 };
 
                 const buttonContainer = document.createElement('div');
@@ -978,8 +985,11 @@
         
         // Memuat semua aset dan folder saat halaman dimuat
         document.addEventListener('DOMContentLoaded', () => {
-            fetchAssets(null, 1);
-            fetchFolders(1);
+            // Ensure mobile detection works from the start
+            setTimeout(() => {
+                fetchAssets(null, 1);
+                fetchFolders(1);
+            }, 100);
 
             // Add live search for folders
             const searchInput = document.getElementById('folder-search');
@@ -988,7 +998,26 @@
                 const filteredFolders = allFolders.filter(folder => folder.name.toLowerCase().includes(query));
                 renderFolders(filteredFolders);
             });
+
+            // Add auto-close functionality for mobile menu
+            setTimeout(() => {
+                addMenuAutoClose();
+            }, 500);
         });
+
+        function addMenuAutoClose() {
+            // Add click handlers to sidebar menu links for auto-close on mobile
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu a, .sidebar-menu li a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth < 768) {
+                        // Close sidebar on mobile after clicking a menu item
+                        document.querySelector('.sidebar').classList.remove('show');
+                        document.querySelector('.sidebar-overlay').classList.remove('show');
+                    }
+                });
+            });
+        }
 
         // Perbarui URL fetch di fungsi fetchAssets
         // ... (fungsi lainnya)
