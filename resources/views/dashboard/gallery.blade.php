@@ -1236,7 +1236,14 @@
         // Comments functionality
         async function loadComments(assetId) {
             try {
-                const response = await fetch(`/assets/${assetId}/comments`);
+                const response = await fetch(`/assets/${assetId}/comments`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    credentials: 'same-origin'
+                });
                 const comments = await response.json();
                 renderComments(assetId, comments);
             } catch (error) {
@@ -1277,8 +1284,11 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
                         },
+                        credentials: 'same-origin',
                         body: JSON.stringify({ comment: commentText })
                     });
 

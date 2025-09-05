@@ -211,22 +211,32 @@ class AssetController extends Controller
 
     public function getComments($id)
     {
+        \Log::info('getComments called with ID: ' . $id);
+        \Log::info('Current user ID: ' . Auth::id());
+
         $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
 
         if (!$asset) {
+            \Log::error('Asset not found for ID: ' . $id . ' and user: ' . Auth::id());
             return response()->json(['error' => 'Asset not found'], 404);
         }
 
         $comments = $asset->comments()->with('user')->latest()->get();
+        \Log::info('Found ' . $comments->count() . ' comments');
 
         return response()->json($comments);
     }
 
     public function storeComment(Request $request, $id)
     {
+        \Log::info('storeComment called with ID: ' . $id);
+        \Log::info('Current user ID: ' . Auth::id());
+        \Log::info('Request data: ', $request->all());
+
         $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
 
         if (!$asset) {
+            \Log::error('Asset not found for ID: ' . $id . ' and user: ' . Auth::id());
             return response()->json(['error' => 'Asset not found'], 404);
         }
 
@@ -241,6 +251,7 @@ class AssetController extends Controller
         ]);
 
         $comment->load('user');
+        \Log::info('Comment created successfully');
 
         return response()->json(['success' => true, 'comment' => $comment]);
     }

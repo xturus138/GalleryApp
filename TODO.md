@@ -23,6 +23,6 @@
 
 ## Next Steps
 
--   Test the feature by opening assets and adding comments
--   Ensure proper error handling and validation
--   Consider adding delete/edit comment functionality if needed
+-   [x] Test the feature by opening assets and adding comments
+-   [x] Ensure proper error handling and validation
+-   [x] Consider adding delete/edit comment functionality if needed
