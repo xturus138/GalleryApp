@@ -290,11 +290,11 @@
             margin: auto;
             padding: 20px;
             border-radius: 8px;
-            width: 80%;
-            max-width: 900px;
+            width: 90%;
+            max-width: 1000px;
             position: relative;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            max-height: 90vh; 
+            max-height: 95vh;
             overflow-y: auto;
         }
         #mediaContainer {
@@ -302,12 +302,16 @@
             height: auto;
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: 200px;
         }
         #mediaContainer img,
         #mediaContainer video {
             max-width: 100%;
-            height: auto;
+            max-height: 70vh;
+            object-fit: contain;
             display: block;
+            border-radius: 4px;
         }
         .close-button {
             position: absolute;

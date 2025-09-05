@@ -1,3 +1,4 @@
 -   [x] Modify AssetController.php to accept per_page parameter (default 21)
 -   [x] Update gallery.blade.php JavaScript to send per_page based on screen width
 -   [x] Test pagination on different screen sizes (manual testing required on different devices/screen sizes)
+-   [x] Improve asset viewer modal for better UX on vertical and horizontal images/videos
