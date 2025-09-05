@@ -237,33 +237,42 @@
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                top: 60px;
+                top: 0;
                 left: 0;
-                width: 100%;
-                height: calc(100vh - 60px);
+                width: 70%;
+                height: 100vh;
                 z-index: 1500;
-                transform: translateY(-100%);
+                transform: translateX(-100%);
                 opacity: 0;
                 visibility: hidden;
                 transition: all 0.3s ease;
+                padding: 20px;
+                box-sizing: border-box;
             }
             .sidebar.show {
-                transform: translateY(0);
+                transform: translateX(0);
                 opacity: 1;
                 visibility: visible;
             }
             .sidebar-overlay {
                 display: none;
                 position: fixed;
-                top: 60px;
+                top: 0;
                 left: 0;
                 width: 100%;
-                height: calc(100vh - 60px);
+                height: 100vh;
                 background-color: rgba(0, 0, 0, 0.5);
                 z-index: 1499;
             }
             .sidebar-overlay.show {
                 display: block;
+            }
+            .no-scroll {
+                overflow: hidden;
+                overflow-x: hidden;
+            }
+            .sidebar {
+                overflow-x: hidden;
             }
             .content {
                 padding: 20px;
@@ -327,6 +336,7 @@
             function toggleSidebar() {
                 document.querySelector('.sidebar').classList.toggle('show');
                 document.querySelector('.sidebar-overlay').classList.toggle('show');
+                document.body.classList.toggle('no-scroll');
             }
 
         document.getElementById('logoutLink').addEventListener('click', function(event) {
