@@ -33,12 +33,20 @@
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                left: -250px;
-                height: 100%;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                height: calc(100vh - 60px);
                 z-index: 1500;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
             }
             .sidebar.show {
-                left: 0;
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
             }
         }
         .sidebar-header {
@@ -219,9 +227,33 @@
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                left: -250px;
-                height: 100%;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                height: calc(100vh - 60px);
                 z-index: 1500;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            .sidebar.show {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                height: calc(100vh - 60px);
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 1499;
+            }
+            .sidebar-overlay.show {
+                display: block;
             }
             .content {
                 padding: 20px;
@@ -241,53 +273,55 @@
         }
     </style>
 </head>
-<body>
-    <div class="hamburger-menu" onclick="toggleSidebar()">
-        &#9776;
-    </div>
-    <div class="main-container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-            </div>
-            <div class="user-info">
-                <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : '/placeholder-user.jpg' }}" alt="User Avatar">
-                <span class="user-name">{{ Auth::user()->name }}</span>
-            </div>
-            <ul class="sidebar-menu">
-                <li><a href="{{ route('dashboard') }}" id="all-media-link">🏠 All Media</a></li>
-                <li><a href="{{ route('profile.show') }}">👤 Profile</a></li>
-                <li><a href="#" onclick="showCreateFolderModal()">📂 Folder Baru</a></li>
-                <li style="margin-top: 10px; font-weight: bold; color: #495057;">Daftar Folder:</li>
-                <input type="text" class="search-input" placeholder="🔍 Search folders..." id="folder-search">
-                <div id="folders-list-container">
-                    </div>
-                <!-- Pagination for Folders -->
-                <div id="folders-pagination" class="pagination-container" style="display: none; margin-top: 10px;">
-                    <button id="folders-prev" class="pagination-btn"><</button>
-                    <div id="folders-page-numbers" class="page-numbers"></div>
-                    <button id="folders-next" class="pagination-btn">></button>
+    <body>
+        <div class="hamburger-menu" onclick="toggleSidebar()">
+            &#9776;
+        </div>
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <div class="main-container">
+            <aside class="sidebar">
+                <div class="sidebar-header">
                 </div>
-            </ul>
-    <a href="{{ route('logout') }}" class="logout-button" id="logoutLink">🚪 Logout</a>
-</aside>
+                <div class="user-info">
+                    <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : '/placeholder-user.jpg' }}" alt="User Avatar">
+                    <span class="user-name">{{ Auth::user()->name }}</span>
+                </div>
+                <ul class="sidebar-menu">
+                    <li><a href="{{ route('dashboard') }}" id="all-media-link">🏠 All Media</a></li>
+                    <li><a href="{{ route('profile.show') }}">👤 Profile</a></li>
+                    <li><a href="#" onclick="showCreateFolderModal()">📂 Folder Baru</a></li>
+                    <li style="margin-top: 10px; font-weight: bold; color: #495057;">Daftar Folder:</li>
+                    <input type="text" class="search-input" placeholder="🔍 Search folders..." id="folder-search">
+                    <div id="folders-list-container">
+                        </div>
+                    <!-- Pagination for Folders -->
+                    <div id="folders-pagination" class="pagination-container" style="display: none; margin-top: 10px;">
+                        <button id="folders-prev" class="pagination-btn"><</button>
+                        <div id="folders-page-numbers" class="page-numbers"></div>
+                        <button id="folders-next" class="pagination-btn">></button>
+                    </div>
+                </ul>
+        <a href="{{ route('logout') }}" class="logout-button" id="logoutLink">🚪 Logout</a>
+    </aside>
 
-<div class="content">
-    @yield('content')
-</div>
+    <div class="content">
+        @yield('content')
     </div>
-    
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-        @csrf
-    </form>
+        </div>
+        
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
 
-    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
-        <div class="spinner"></div>
-    </div>
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+            <div class="spinner"></div>
+        </div>
 
-    <script>
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('show');
-        }
+        <script>
+            function toggleSidebar() {
+                document.querySelector('.sidebar').classList.toggle('show');
+                document.querySelector('.sidebar-overlay').classList.toggle('show');
+            }
 
         document.getElementById('logoutLink').addEventListener('click', function(event) {
             event.preventDefault();

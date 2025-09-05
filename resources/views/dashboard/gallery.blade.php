@@ -501,7 +501,12 @@
 
         @media (max-width: 768px) {
             .gallery-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            .gallery-item img,
+            .gallery-item video {
+                height: 120px;
             }
             .modal-content, .modal-content-viewer {
                 width: 95%;
