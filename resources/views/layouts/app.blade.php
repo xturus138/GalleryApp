@@ -230,9 +230,9 @@
                     </div>
                 <!-- Pagination for Folders -->
                 <div id="folders-pagination" class="pagination-container" style="display: none; margin-top: 10px;">
-                    <button id="folders-prev" class="pagination-btn">Previous</button>
+                    <button id="folders-prev" class="pagination-btn"><</button>
                     <div id="folders-page-numbers" class="page-numbers"></div>
-                    <button id="folders-next" class="pagination-btn">Next</button>
+                    <button id="folders-next" class="pagination-btn">></button>
                 </div>
             </ul>
     <a href="{{ route('logout') }}" class="logout-button" id="logoutLink">🚪 Logout</a>
