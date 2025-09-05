@@ -128,6 +128,18 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
+
+        @media (max-width: 480px) {
+            .login-container {
+                width: 90%;
+                padding: 1.5rem;
+                margin: 0 1rem;
+            }
+
+            .login-container h2 {
+                font-size: 1.8rem;
+            }
+        }
     </style>
 </head>
 <body>
