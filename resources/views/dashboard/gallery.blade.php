@@ -96,7 +96,11 @@
     </div>
 
     <div id="loadingOverlay" class="loading-overlay" style="display: none;">
-        <div class="spinner"></div>
+        <div class="loading-content">
+            <div class="spinner" id="uploadSpinner"></div>
+            <div class="loading-text" id="loadingText">Mengunggah file...</div>
+            <div class="loading-details" id="loadingDetails"></div>
+        </div>
     </div>
 
     <style>
@@ -304,6 +308,14 @@
             align-items: center;
             z-index: 2000;
         }
+        .loading-content {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            min-width: 250px;
+        }
         .spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
             width: 36px;
@@ -311,6 +323,23 @@
             border-radius: 50%;
             border-left-color: #6366f1;
             animation: spin 1s ease infinite;
+            margin: 0 auto 15px;
+        }
+        .spinner.photo-upload {
+            border-left-color: #10b981; /* Green for photos */
+        }
+        .spinner.video-upload {
+            border-left-color: #f59e0b; /* Orange for videos */
+        }
+        .loading-text {
+            font-size: 16px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        .loading-details {
+            font-size: 14px;
+            color: #6b7280;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -568,10 +597,59 @@
             document.getElementById('assetViewerModal').style.display = 'none';
         }
 
+        // Helper function to analyze file types
+        function analyzeFileTypes(files) {
+            let photoCount = 0;
+            let videoCount = 0;
+            let otherCount = 0;
+
+            for (const file of files) {
+                if (file.type.startsWith('image/')) {
+                    photoCount++;
+                } else if (file.type.startsWith('video/')) {
+                    videoCount++;
+                } else {
+                    otherCount++;
+                }
+            }
+
+            return { photoCount, videoCount, otherCount, total: files.length };
+        }
+
+        // Function to show dynamic loading indicator based on file types
+        function showDynamicLoadingIndicator(fileTypes) {
+            const spinner = document.getElementById('uploadSpinner');
+            const loadingText = document.getElementById('loadingText');
+            const loadingDetails = document.getElementById('loadingDetails');
+
+            // Reset classes
+            spinner.className = 'spinner';
+
+            if (fileTypes.videoCount > 0 && fileTypes.photoCount === 0) {
+                // Only videos
+                spinner.classList.add('video-upload');
+                loadingText.textContent = 'Mengunggah video...';
+                loadingDetails.textContent = `${fileTypes.videoCount} video${fileTypes.videoCount > 1 ? 's' : ''} sedang diproses`;
+            } else if (fileTypes.photoCount > 0 && fileTypes.videoCount === 0) {
+                // Only photos
+                spinner.classList.add('photo-upload');
+                loadingText.textContent = 'Mengunggah foto...';
+                loadingDetails.textContent = `${fileTypes.photoCount} foto${fileTypes.photoCount > 1 ? 's' : ''} sedang diproses`;
+            } else if (fileTypes.photoCount > 0 && fileTypes.videoCount > 0) {
+                // Mixed files
+                loadingText.textContent = 'Mengunggah media...';
+                loadingDetails.textContent = `${fileTypes.photoCount} foto & ${fileTypes.videoCount} video sedang diproses`;
+            } else {
+                // Other files or fallback
+                loadingText.textContent = 'Mengunggah file...';
+                loadingDetails.textContent = `${fileTypes.total} file${fileTypes.total > 1 ? 's' : ''} sedang diproses`;
+            }
+
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
         document.getElementById('uploadForm').addEventListener('submit', async function(event) {
             event.preventDefault();
-            
-            document.getElementById('loadingOverlay').style.display = 'flex';
 
             const form = event.target;
             const formData = new FormData();
@@ -579,17 +657,19 @@
             const titleInput = document.getElementById('title');
             const captionInput = document.getElementById('caption');
 
-
             if (fileInput.files.length === 0) {
                 alert('Pilih setidaknya satu file.');
-                document.getElementById('loadingOverlay').style.display = 'none';
                 return;
             }
+
+            // Analyze file types for dynamic loading indicator
+            const fileTypes = analyzeFileTypes(fileInput.files);
+            showDynamicLoadingIndicator(fileTypes);
 
             for (const file of fileInput.files) {
                 formData.append('files[]', file);
             }
-            
+
             formData.append('title', titleInput.value);
             formData.append('caption', captionInput.value);
             formData.append('folder', document.getElementById('folder').value);

@@ -63,7 +63,15 @@ class AssetController extends Controller
                 'files.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,webm|max:100000',
                 'title' => 'nullable|string|max:255',
                 'caption' => 'nullable|string',
-                'folder' => 'nullable|uuid|exists:folders,id',
+                'folder' => [
+                    'nullable',
+                    'string',
+                    function ($attribute, $value, $fail) {
+                        if ($value !== 'none' && !\App\Models\Folder::where('id', $value)->exists()) {
+                            $fail('The selected folder is invalid.');
+                        }
+                    }
+                ],
             ]);
 
             $uploadedAssets = [];

@@ -1,39 +1,31 @@
-# Change Pagination Format to Numbered Pages
+# Dynamic Upload Loading Indicator Implementation
 
-## Information Gathered
+## Tasks
 
--   Project: Laravel Gallery App with existing pagination.
--   Current: Pagination shows "Page X of Y" with Previous/Next buttons.
--   New: Numbered pages like 1 2 3 ... 10 with ellipsis.
--   Technologies: Laravel, Blade, JavaScript.
--   Views: gallery.blade.php, layouts/app.blade.php.
+-   [x] Modify loading overlay HTML to support dynamic content (text and spinner variations)
+-   [x] Update JavaScript upload handler to detect file types (image/video)
+-   [x] Implement dynamic loading indicator based on file types
+-   [x] Add CSS styles for different loading states (photo/video)
+-   [x] Test upload functionality with photos and videos
+-   [x] Fix upload validation error for folder field
 
-## Plan
+## Implementation Details
 
-1. **HTML Updates** ✅
+-   Detect file types using MIME types before upload
+-   Show different loading messages and spinners for photos vs videos
+-   Maintain existing upload functionality
+-   Update loading overlay to be more informative about upload progress
+-   Fixed folder validation to accept 'none' value properly
 
-    - ✅ Update assets pagination container in gallery.blade.php.
-    - ✅ Update folders pagination container in app.blade.php.
-    - ✅ Replace page-info span with page-numbers div.
-
-2. **JavaScript Changes** ✅
-
-    - ✅ Modify renderAssetsPagination() to generate numbered buttons with ellipsis.
-    - ✅ Modify renderFoldersPagination() to generate numbered buttons with ellipsis.
-    - ✅ Handle click events for page navigation.
-
-3. **CSS Updates** ✅
-
-    - ✅ Add styles for page-numbers container.
-    - ✅ Add styles for pagination-ellipsis.
-
-## Dependent Files
+## Files Modified
 
 -   resources/views/dashboard/gallery.blade.php
--   resources/views/layouts/app.blade.php
+-   app/Http/Controllers/AssetController.php
 
-## Followup Steps
+## Features Implemented
 
--   Test pagination navigation.
--   Ensure ellipsis works for many pages.
--   Verify disabled state for current page.
+-   Dynamic loading indicator based on file types (photos, videos, or mixed)
+-   Color-coded spinners (green for photos, orange for videos)
+-   Informative loading text showing file counts
+-   Support for mixed file uploads
+-   Fixed upload validation for folder selection
