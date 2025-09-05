@@ -26,9 +26,10 @@ class AssetController extends Controller
     public function getAssets(Request $request)
     {
         $page = $request->query('page', 1);
+        $perPage = 15; // updated per user request
         $assets = Asset::where('uploaded_by', Auth::id())
             ->latest()
-            ->paginate(10, ['*'], 'page', $page);
+            ->paginate($perPage, ['*'], 'page', $page);
 
         $assets->getCollection()->transform(function ($asset) {
             $asset->formatted_size = SizeHelper::formatSize($asset->file_size);
@@ -42,10 +43,11 @@ class AssetController extends Controller
     public function getAssetsByFolder(Request $request, $folderId)
     {
         $page = $request->query('page', 1);
+        $perPage = 15; // updated per user request
         $assets = Asset::where('uploaded_by', Auth::id())
             ->where('folder_id', $folderId)
             ->latest()
-            ->paginate(10, ['*'], 'page', $page);
+            ->paginate($perPage, ['*'], 'page', $page);
 
         $assets->getCollection()->transform(function ($asset) {
             $asset->formatted_size = SizeHelper::formatSize($asset->file_size);
