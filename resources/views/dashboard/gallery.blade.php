@@ -493,6 +493,28 @@
             color: #495057;
             font-weight: 500;
         }
+
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            .modal-content, .modal-content-viewer {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .action-buttons button {
+                padding: 8px 12px;
+            }
+        }
     </style>
 
     <script>

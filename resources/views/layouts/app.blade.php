@@ -210,9 +210,41 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
+
+        .hamburger-menu {
+            display: none;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -250px;
+                height: 100%;
+                z-index: 1500;
+            }
+            .content {
+                padding: 20px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .hamburger-menu {
+                display: block;
+                position: fixed;
+                top: 15px;
+                left: 15px;
+                z-index: 1600;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="hamburger-menu" onclick="toggleSidebar()">
+        &#9776;
+    </div>
     <div class="main-container">
         <aside class="sidebar">
             <div class="sidebar-header">
@@ -252,6 +284,10 @@
     </div>
 
     <script>
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('show');
+        }
+
         document.getElementById('logoutLink').addEventListener('click', function(event) {
             event.preventDefault();
 

@@ -79,6 +79,13 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
+
+        @media (max-width: 480px) {
+            .dashboard-container {
+                width: 90%;
+                padding: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
