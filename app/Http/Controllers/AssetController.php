@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log;
+use App\Helpers\SizeHelper;
 use App\Models\Asset;
-use App\Models\Folder;
 use App\Models\AssetHeart;
 use App\Models\Comment;
+use App\Models\Folder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use App\Helpers\SizeHelper;
 
 class AssetController extends Controller
 {
@@ -214,10 +214,10 @@ class AssetController extends Controller
         \Log::info('getComments called with ID: ' . $id);
         \Log::info('Current user ID: ' . Auth::id());
 
-        $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
+        $asset = Asset::find($id);
 
         if (!$asset) {
-            \Log::error('Asset not found for ID: ' . $id . ' and user: ' . Auth::id());
+            \Log::error('Asset not found for ID: ' . $id);
             return response()->json(['error' => 'Asset not found'], 404);
         }
 
@@ -233,10 +233,10 @@ class AssetController extends Controller
         \Log::info('Current user ID: ' . Auth::id());
         \Log::info('Request data: ', $request->all());
 
-        $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
+        $asset = Asset::find($id);
 
         if (!$asset) {
-            \Log::error('Asset not found for ID: ' . $id . ' and user: ' . Auth::id());
+            \Log::error('Asset not found for ID: ' . $id);
             return response()->json(['error' => 'Asset not found'], 404);
         }
 
