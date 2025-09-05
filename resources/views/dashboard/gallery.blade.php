@@ -10,6 +10,7 @@
         </div>
         <div class="action-buttons">
             <button onclick="showUploadModal()">Unggah</button>
+            <button onclick="window.location.href='{{ route('profile.show') }}'">Profile</button>
         </div>
     </div>
 

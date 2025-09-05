@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\FolderController; // Import FolderController
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -37,4 +38,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/folders', [FolderController::class, 'list'])->name('folders.list');
     Route::put('/folders/{id}', [FolderController::class, 'update'])->name('folder.update');
     Route::delete('/folders/{id}', [FolderController::class, 'destroy'])->name('folder.destroy');
+
+    // Rute untuk profile
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
