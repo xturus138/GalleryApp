@@ -3,14 +3,43 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <div class="header">
-        <h1><span id="current-view-title">All Media</span></h1>
-        <div class="storage-info">
-            <p>Penyimpanan: {{ $totalStorageFormatted }} / {{ $totalStorageLimit }} ({{ $percentageUsed }}%)</p>
+    <div class="modern-header">
+        <div class="header-content">
+            <h1 class="gallery-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="title-icon">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="9" cy="9" r="2"></circle>
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
+                </svg>
+                <span id="current-view-title">All Media</span>
+            </h1>
+            <div class="header-actions">
+                <button class="modern-btn primary-btn" onclick="showUploadModal()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17,8 12,3 7,8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Upload
+                </button>
+                <button class="modern-btn secondary-btn" onclick="window.location.href='{{ route('profile.show') }}'">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    Profile
+                </button>
+            </div>
         </div>
-        <div class="action-buttons">
-            <button onclick="showUploadModal()">Unggah</button>
-            <button onclick="window.location.href='{{ route('profile.show') }}'">Profile</button>
+        <div class="storage-progress">
+            <div class="storage-label">
+                <span>Storage Used</span>
+                <span class="storage-text">{{ $totalStorageFormatted }} / {{ $totalStorageLimit }}</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ $percentageUsed }}%"></div>
+            </div>
+            <span class="progress-percentage">{{ $percentageUsed }}%</span>
         </div>
     </div>
 
@@ -30,18 +59,34 @@
     <div id="gallery-container" class="gallery-grid" style="display: none;">
     </div>
 
-    <!-- Pagination for Assets -->
-    <div id="assets-pagination" class="pagination-container" style="display: none;">
-        <button id="assets-prev" class="pagination-btn"><</button>
-        <div id="assets-page-numbers" class="page-numbers"></div>
-        <button id="assets-next" class="pagination-btn">></button>
+    <!-- Modern Pagination for Assets -->
+    <div id="assets-pagination" class="modern-pagination" style="display: none;">
+        <button id="assets-prev" class="pagination-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15,18 9,12 15,6"></polyline>
+            </svg>
+        </button>
+        <div id="assets-page-numbers" class="pagination-numbers"></div>
+        <button id="assets-next" class="pagination-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+            </svg>
+        </button>
     </div>
 
-    <!-- Pagination for Folders -->
-    <div id="folders-pagination" class="pagination-container" style="display: none;">
-        <button id="folders-prev" class="pagination-btn"><</button>
-        <div id="folders-page-numbers" class="page-numbers"></div>
-        <button id="folders-next" class="pagination-btn">></button>
+    <!-- Modern Pagination for Folders -->
+    <div id="folders-pagination" class="modern-pagination" style="display: none;">
+        <button id="folders-prev" class="pagination-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15,18 9,12 15,6"></polyline>
+            </svg>
+        </button>
+        <div id="folders-page-numbers" class="pagination-numbers"></div>
+        <button id="folders-next" class="pagination-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9,18 15,12 9,6"></polyline>
+            </svg>
+        </button>
     </div>
 
     <div id="uploadModal" class="modal">
@@ -143,116 +188,324 @@
     </div>
 
     <style>
-        .gallery-item-info .info-top {
+        /* Modern Header Styles */
+        .modern-header {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-        .gallery-item-info .truncate {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 70%;
-        }
-        .view-button {
-            padding: 5px 10px;
-            background-color: #4a5568;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        .view-button:hover {
-            background-color: #6366f1;
-        }
-        .like-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .like-button:hover .like-icon {
-            transform: scale(1.2);
-        }
-        .like-icon {
-            transition: transform 0.2s, color 0.2s;
-        }
-        .like-count {
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-        .dropdown-toggle {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 5px;
-        }
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            z-index: 1000;
-            min-width: 100px;
-        }
-        .dropdown-menu button {
-            display: block;
-            width: 100%;
-            padding: 8px 12px;
-            background: none;
-            border: none;
-            text-align: left;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        .dropdown-menu button:hover {
-            background-color: #f8f9fa;
-        }
-        .gallery-item {
-            position: relative;
-            animation: fadeInUp 0.6s ease-out both;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
         }
 
-        .gallery-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        .gallery-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
         }
-        .dropdown {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            z-index: 10;
+
+        .title-icon {
+            color: #6366f1;
         }
-        .gallery-item img,
-        .gallery-item video {
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modern-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.5);
+        }
+
+        .secondary-btn {
+            background: #ffffff;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+        }
+
+        .secondary-btn:hover {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+        }
+
+        .storage-progress {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .storage-label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 120px;
+        }
+
+        .storage-label span:first-child {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .storage-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 600;
+            color: #059669;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        /* Modern Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .gallery-card {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .gallery-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-image-container {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+        }
+
+        .gallery-card img,
+        .gallery-card video {
             width: 100%;
-            height: 150px;
+            height: 100%;
             object-fit: cover;
             display: block;
+            transition: transform 0.3s ease;
         }
-        .asset-details {
-            font-size: 0.8rem;
-            color: #6c757d;
-            margin-top: 5px;
+
+        .gallery-card:hover img,
+        .gallery-card:hover video {
+            transform: scale(1.05);
+        }
+
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .gallery-card:hover .card-overlay {
+            opacity: 1;
+        }
+
+        .overlay-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .overlay-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .overlay-btn:hover {
+            transform: scale(1.1);
+            background: #ffffff;
+        }
+
+        .edit-btn:hover {
+            color: #3b82f6;
+        }
+
+        .delete-btn:hover {
+            color: #ef4444;
+        }
+
+        .share-btn:hover {
+            color: #10b981;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
             line-height: 1.4;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }
-        .asset-details strong {
-            color: #333;
+
+        .view-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
         }
-        .caption {
-            font-style: italic;
-            color: #6c757d;
-            font-size: 0.8rem;
-            margin-top: 5px;
+
+        .view-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .meta-item {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .like-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .like-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .heart-icon {
+            transition: all 0.2s ease;
+        }
+
+        .like-btn:hover .heart-icon {
+            transform: scale(1.2);
+        }
+
+        .like-count {
+            font-size: 12px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .card-caption {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         /* Style untuk modal */
         .modal {
@@ -521,37 +774,76 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Pagination Styles */
-        .pagination-container {
+        /* Modern Pagination Styles */
+        .modern-pagination {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            margin-top: 20px;
-            padding: 10px;
+            gap: 8px;
+            margin-top: 32px;
+            padding: 16px;
         }
-        .pagination-btn {
-            padding: 8px 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
+
+        .pagination-arrow {
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: background-color 0.3s;
-            min-width: 40px;
+            transition: all 0.2s ease;
+            color: #6b7280;
         }
-        .pagination-btn:hover:not(:disabled) {
-            background-color: #0056b3;
+
+        .pagination-arrow:hover:not(:disabled) {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            color: #374151;
+            transform: translateY(-1px);
         }
-        .pagination-btn:disabled {
-            background-color: #6c757d;
+
+        .pagination-arrow:disabled {
+            opacity: 0.5;
             cursor: not-allowed;
         }
-        .page-numbers {
+
+        .pagination-numbers {
             display: flex;
-            gap: 5px;
+            gap: 4px;
             align-items: center;
+        }
+
+        .pagination-numbers button {
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            transition: all 0.2s ease;
+        }
+
+        .pagination-numbers button:hover:not(:disabled) {
+            background: #f9fafb;
+            border-color: #d1d5db;
+            transform: translateY(-1px);
+        }
+
+        .pagination-numbers button:disabled {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            border-color: #6366f1;
+            color: white;
+            cursor: default;
+            transform: none;
         }
         .comments-section {
             margin-top: 10px;
@@ -1153,31 +1445,58 @@
 
 
                 const assetHtml = `
-                    <div class="gallery-item" style="animation-delay: ${index * 0.1}s;">
-                        <div class="dropdown">
-                            <button class="dropdown-toggle" onclick="toggleDropdown('${asset.id}')">&#8230;</button>
-                            <div class="dropdown-menu" id="dropdown-${asset.id}" style="display: none;">
-                                <button onclick="showEditModal('${asset.id}', '${asset.title || ''}', '${asset.caption || ''}', '${asset.folder_id || 'none'}')">Edit</button>
-                                <button onclick="deleteAsset('${asset.id}')">Hapus</button>
+                    <div class="gallery-card" style="animation-delay: ${index * 0.1}s;">
+                        <div class="card-image-container">
+                            ${mediaHtml}
+                            <div class="card-overlay">
+                                <div class="overlay-actions">
+                                    <button class="overlay-btn edit-btn" onclick="showEditModal('${asset.id}', '${asset.title || ''}', '${asset.caption || ''}', '${asset.folder_id || 'none'}')" title="Edit">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="overlay-btn delete-btn" onclick="deleteAsset('${asset.id}')" title="Delete">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="3,6 5,6 21,6"></polyline>
+                                            <path d="m19,6v14a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6m3,0V4a2,2 0 0,1,2-2h4a2,2 0 0,1,2,2v2"></path>
+                                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                                        </svg>
+                                    </button>
+                                    <button class="overlay-btn share-btn" onclick="shareAsset('${asset.blob_url}', '${asset.title || asset.original_filename}')" title="Share">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="18" cy="5" r="3"></circle>
+                                            <circle cx="6" cy="12" r="3"></circle>
+                                            <circle cx="18" cy="19" r="3"></circle>
+                                            <path d="m8.59 13.51 6.83 3.98"></path>
+                                            <path d="m15.41 6.51-6.82 3.98"></path>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                        ${mediaHtml}
-                        <div class="gallery-item-info">
-                            <div class="info-top">
-                                <h4 class="truncate">${asset.title || asset.original_filename}</h4>
-                                <button class="view-button" onclick="showAssetViewer('${asset.blob_url}', '${asset.file_type}', '${asset.title || asset.original_filename}', '${asset.id}')">Lihat</button>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <h3 class="card-title">${asset.title || asset.original_filename}</h3>
+                                <button class="view-btn" onclick="showAssetViewer('${asset.blob_url}', '${asset.file_type}', '${asset.title || asset.original_filename}', '${asset.id}')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    View
+                                </button>
                             </div>
-                            <div class="asset-details">
-                                <p><strong>Ukuran:</strong> ${asset.formatted_size}</p>
-                                ${asset.caption ? `<p><strong>Keterangan:</strong> ${asset.caption}</p>` : ''}
-                                <p>
-                                    <button class="like-button" data-asset-id="${asset.id}" aria-label="Like button">
-                                        <span class="like-icon" style="color: ${asset.is_liked_by_user ? 'red' : 'gray'};">&#10084;</span>
-                                        <span class="like-count">${asset.likes_count}</span>
-                                    </button>
-                                </p>
-
+                            <div class="card-meta">
+                                <span class="meta-item file-size">${asset.formatted_size}</span>
+                                <button class="like-btn" data-asset-id="${asset.id}" aria-label="Like button">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="${asset.is_liked_by_user ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" class="heart-icon">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                                    </svg>
+                                    <span class="like-count">${asset.likes_count}</span>
+                                </button>
                             </div>
+                            ${asset.caption ? `<p class="card-caption">${asset.caption}</p>` : ''}
                         </div>
                     </div>
                 `;
