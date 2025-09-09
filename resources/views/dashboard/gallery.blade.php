@@ -74,16 +74,46 @@
     </div>
 
     <div id="assetViewerModal" class="modal">
+        <div class="modal-overlay"></div>
         <div class="modal-content-viewer" id="assetContent">
-            <span class="close-button" onclick="hideAssetViewer()">&times;</span>
-            <div id="assetViewerTitle" style="font-weight: bold; margin-bottom: 10px; color: black;"></div>
+            <div class="modal-header">
+                <div class="modal-title" id="assetViewerTitle"></div>
+                <div class="modal-actions">
+                    <button class="action-btn download-btn" id="downloadBtn" title="Download">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7,10 12,15 17,10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button>
+                    <button class="action-btn share-btn" id="shareBtn" title="Share">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <path d="m8.59 13.51 6.83 3.98"></path>
+                            <path d="m15.41 6.51-6.82 3.98"></path>
+                        </svg>
+                    </button>
+                    <button class="close-button" onclick="hideAssetViewer()" title="Close">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
             <div id="mediaContainer"></div>
-            <div id="assetViewerComments" class="comments-section" style="margin-top: 20px;">
-                <h4>Komentar</h4>
+            <div id="assetViewerComments" class="comments-section">
+                <div class="comments-header">
+                    <h4>Comments</h4>
+                </div>
                 <div id="commentsList" class="comments-list"></div>
                 <form id="commentForm" class="comment-form">
-                    <input type="text" placeholder="Tambahkan komentar..." required maxlength="1000">
-                    <button type="submit">Kirim</button>
+                    <div class="comment-input-container">
+                        <input type="text" placeholder="Add a comment..." required maxlength="1000">
+                        <button type="submit" class="comment-submit-btn">Post</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -234,8 +264,16 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.7);
-            padding-top: 60px;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(2px);
         }
 
         .modal-content {
@@ -287,46 +325,109 @@
 
         .modal-content-viewer {
             background-color: #ffffff;
-            margin: auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 1000px;
+            margin: 2vh auto;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 1200px;
             position: relative;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            max-height: 95vh;
-            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            max-height: 96vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #ffffff;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            color: #6b7280;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .download-btn:hover {
+            color: #059669;
+        }
+
+        .share-btn:hover {
+            color: #3b82f6;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            color: #6b7280;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-button:hover {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
         #mediaContainer {
-            width: 100%;
-            height: auto;
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 200px;
+            padding: 24px;
+            background: #f8fafc;
+            min-height: 300px;
+            max-height: 70vh;
+            overflow: hidden;
         }
+
         #mediaContainer img,
         #mediaContainer video {
             max-width: 100%;
-            max-height: 70vh;
+            max-height: 100%;
             object-fit: contain;
             display: block;
-            border-radius: 4px;
-        }
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            color: #333;
-            font-size: 30px;
-            font-weight: bold;
-            transition: 0.3s;
-            cursor: pointer;
-        }
-        .close-button:hover,
-        .close-button:focus {
-            color: #aaa;
-            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         .loading-overlay {
             position: fixed;
@@ -454,44 +555,124 @@
         }
         .comments-section {
             margin-top: 10px;
+            padding: 16px 24px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
+
+        .comments-header {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .comments-header h4 {
+            margin: 0;
+            font-weight: 600;
+            color: #111827;
+        }
+
         .comments-list {
-            max-height: 150px;
+            max-height: 180px;
             overflow-y: auto;
-            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
+
         .comment {
-            background-color: #f8f9fa;
-            padding: 5px 10px;
-            margin-bottom: 5px;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            background: #f9fafb;
+            padding: 12px 16px;
+            border-radius: 12px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            font-size: 0.875rem;
         }
+
         .comment strong {
-            color: #495057;
+            color: #111827;
+            font-weight: 600;
         }
+
+        .comment .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #d1d5db;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            color: #6b7280;
+            user-select: none;
+        }
+
+        .comment-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .comment-text {
+            color: #374151;
+        }
+
+        .comment-timestamp {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
         .comment-form {
             display: flex;
-            gap: 5px;
+            gap: 12px;
+            align-items: center;
+            margin: 16px 0;
         }
+
+        .comment-input-container {
+            flex: 1;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
         .comment-form input {
             flex: 1;
-            padding: 5px;
-            border: 1px solid #e2e8f0;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
         }
-        .comment-form button {
-            padding: 5px 10px;
-            background-color: #4a5568;
-            color: white;
+
+        .comment-form input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .comment-submit-btn {
+            background: linear-gradient(90deg, #3b82f6, #2563eb);
             border: none;
-            border-radius: 4px;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 9999px;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 0.8rem;
+            transition: background 0.3s ease;
+            white-space: nowrap;
         }
-        .comment-form button:hover {
-            background-color: #6366f1;
+
+        .comment-submit-btn:hover {
+            background: linear-gradient(90deg, #2563eb, #1d4ed8);
         }
         .pagination-ellipsis {
             padding: 0 5px;
@@ -510,7 +691,33 @@
             }
             .modal-content, .modal-content-viewer {
                 width: 95%;
-                margin: 10% auto;
+                margin: 2vh auto;
+                max-height: 96vh;
+            }
+            .modal-header {
+                padding: 16px 20px 12px;
+            }
+            .modal-title {
+                font-size: 16px;
+            }
+            #mediaContainer {
+                padding: 16px;
+                min-height: 250px;
+                max-height: 60vh;
+            }
+            .comments-section {
+                padding: 12px 16px;
+            }
+            .comments-list {
+                max-height: 150px;
+            }
+            .comment {
+                padding: 10px 12px;
+                font-size: 0.8rem;
+            }
+            .comment .avatar {
+                width: 32px;
+                height: 32px;
             }
         }
 
@@ -523,6 +730,58 @@
             }
             .action-buttons button {
                 padding: 8px 12px;
+            }
+            .modal-content-viewer {
+                width: 98%;
+                margin: 1vh auto;
+            }
+            .modal-header {
+                padding: 12px 16px 8px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .modal-title {
+                font-size: 14px;
+                order: 1;
+                width: 100%;
+            }
+            .modal-actions {
+                order: 2;
+                gap: 4px;
+            }
+            .action-btn {
+                padding: 6px;
+            }
+            #mediaContainer {
+                padding: 12px;
+                min-height: 200px;
+                max-height: 50vh;
+            }
+            .comments-section {
+                padding: 8px 12px;
+            }
+            .comments-list {
+                max-height: 120px;
+                gap: 8px;
+            }
+            .comment {
+                padding: 8px 10px;
+                gap: 8px;
+            }
+            .comment .avatar {
+                width: 28px;
+                height: 28px;
+            }
+            .comment-form {
+                margin: 12px 0;
+            }
+            .comment-form input {
+                padding: 10px 14px;
+                font-size: 0.85rem;
+            }
+            .comment-submit-btn {
+                padding: 10px 16px;
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -706,6 +965,16 @@
 
             // Set asset ID on modal for comment submission
             document.getElementById('assetViewerModal').setAttribute('data-asset-id', assetId);
+            document.getElementById('assetViewerModal').setAttribute('data-asset-url', url);
+            document.getElementById('assetViewerModal').setAttribute('data-asset-filename', filename);
+
+            // Set up download functionality
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.onclick = () => downloadAsset(url, filename);
+
+            // Set up share functionality
+            const shareBtn = document.getElementById('shareBtn');
+            shareBtn.onclick = () => shareAsset(url, filename);
 
             document.getElementById('assetViewerModal').style.display = 'block';
         }
@@ -1320,14 +1589,50 @@
             commentsList.innerHTML = '';
 
             comments.forEach(comment => {
+                const userInitials = comment.user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                const avatarUrl = comment.user.photo ? `/storage/${comment.user.photo}` : null;
+
                 const commentHtml = `
                     <div class="comment">
-                        <strong>${comment.user.name}:</strong> ${comment.comment}
-                        <small style="color: #6c757d;">${new Date(comment.created_at).toLocaleString()}</small>
+                        <div class="avatar" style="background-image: ${avatarUrl ? `url('${avatarUrl}')` : 'none'}; background-size: cover; background-position: center;">
+                            ${!avatarUrl ? userInitials : ''}
+                        </div>
+                        <div class="comment-content">
+                            <div class="comment-text">
+                                <strong>${comment.user.name}:</strong> ${comment.comment}
+                            </div>
+                            <div class="comment-timestamp">${new Date(comment.created_at).toLocaleString()}</div>
+                        </div>
                     </div>
                 `;
                 commentsList.insertAdjacentHTML('beforeend', commentHtml);
             });
+        }
+
+        function downloadAsset(url, filename) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function shareAsset(url, filename) {
+            if (navigator.share) {
+                navigator.share({
+                    title: filename,
+                    url: url
+                }).catch(console.error);
+            } else {
+                // Fallback: copy URL to clipboard
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('Link copied to clipboard!');
+                }).catch(() => {
+                    alert('Share not supported on this device');
+                });
+            }
         }
 
         // Handle comment form submission
