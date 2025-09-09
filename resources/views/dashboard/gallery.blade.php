@@ -784,6 +784,311 @@
                 font-size: 0.85rem;
             }
         }
+
+        /* Modern Edit Modal Styles */
+        .edit-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1050;
+            opacity: 0;
+            transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+        }
+
+        .edit-modal-overlay.active {
+            opacity: 1;
+        }
+
+        .edit-modal-container {
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        .edit-modal-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .edit-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 28px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+        }
+
+        .edit-modal-title {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            letter-spacing: -0.025em;
+        }
+
+        .edit-modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            color: #64748b;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-modal-close:hover {
+            background-color: #f1f5f9;
+            color: #334155;
+            transform: scale(1.05);
+        }
+
+        .edit-modal-body {
+            padding: 28px;
+        }
+
+        .edit-form {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .edit-form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .edit-form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .edit-form-input,
+        .edit-form-textarea,
+        .edit-form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .edit-form-input:focus,
+        .edit-form-textarea:focus,
+        .edit-form-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .edit-form-input::placeholder,
+        .edit-form-textarea::placeholder {
+            color: #9ca3af;
+            opacity: 1;
+        }
+
+        .edit-form-textarea {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.5;
+        }
+
+        .edit-form-select {
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 40px;
+            appearance: none;
+        }
+
+        .edit-modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding: 20px 28px 24px;
+            border-top: 1px solid #f1f5f9;
+            background: #f8fafc;
+        }
+
+        .edit-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+        }
+
+        .edit-btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .edit-btn-primary:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+        }
+
+        .edit-btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .edit-btn-secondary {
+            background: #ffffff;
+            color: #64748b;
+            border: 2px solid #e2e8f0;
+        }
+
+        .edit-btn-secondary:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #475569;
+            transform: translateY(-1px);
+        }
+
+        /* Modal Animations */
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Responsive Design for Edit Modal */
+        @media (max-width: 640px) {
+            .edit-modal-container {
+                width: 95%;
+                max-height: 95vh;
+            }
+
+            .edit-modal-header {
+                padding: 20px 20px 16px;
+            }
+
+            .edit-modal-title {
+                font-size: 18px;
+            }
+
+            .edit-modal-body {
+                padding: 20px;
+            }
+
+            .edit-modal-footer {
+                padding: 16px 20px 20px;
+                flex-direction: column-reverse;
+            }
+
+            .edit-btn {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .edit-form-input,
+            .edit-form-textarea,
+            .edit-form-select {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .edit-modal-header {
+                padding: 16px 16px 12px;
+            }
+
+            .edit-modal-title {
+                font-size: 16px;
+            }
+
+            .edit-modal-body {
+                padding: 16px;
+            }
+
+            .edit-modal-footer {
+                padding: 12px 16px 16px;
+            }
+
+            .edit-form {
+                gap: 20px;
+            }
+
+            .edit-form-group {
+                gap: 6px;
+            }
+
+            .edit-form-label {
+                font-size: 13px;
+            }
+
+            .edit-form-input,
+            .edit-form-textarea,
+            .edit-form-select {
+                padding: 10px 14px;
+                font-size: 16px;
+            }
+        }
+
+        /* Focus and Accessibility Improvements */
+        .edit-modal-overlay:focus-within .edit-modal-card {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+        }
+
+        .edit-btn:focus {
+            outline: 2px solid #3b82f6;
+            outline-offset: 2px;
+        }
+
+        /* Loading state for form submission */
+        .edit-form.submitting {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .edit-form.submitting .edit-btn-primary::after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            margin-left: 8px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
     </style>
 
     <script>
@@ -1344,35 +1649,58 @@
 
         function showEditModal(id, title, caption, folderId) {
             const modalContent = `
-                <div class="modal-content">
-                    <span class="close-button" onclick="hideEditModal()">&times;</span>
-                    <h2>Edit Media</h2>
-                    <form id="editAssetForm">
-                        <input type="hidden" name="id" value="${id}">
-                        <div class="form-group">
-                            <label for="editTitle">Judul</label>
-                            <input type="text" id="editTitle" name="title" value="${title}">
+                <div class="edit-modal-overlay" id="editModalOverlay">
+                    <div class="edit-modal-container">
+                        <div class="edit-modal-card">
+                            <div class="edit-modal-header">
+                                <h2 class="edit-modal-title">Edit Media</h2>
+                                <button class="edit-modal-close" onclick="hideEditModal()" aria-label="Close modal">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="edit-modal-body">
+                                <form id="editAssetForm" class="edit-form">
+                                    <input type="hidden" name="id" value="${id}">
+                                    <div class="edit-form-group">
+                                        <label for="editTitle" class="edit-form-label">Judul</label>
+                                        <input type="text" id="editTitle" name="title" value="${title}" class="edit-form-input" placeholder="Masukkan judul media">
+                                    </div>
+                                    <div class="edit-form-group">
+                                        <label for="editCaption" class="edit-form-label">Keterangan</label>
+                                        <textarea id="editCaption" name="caption" class="edit-form-textarea" placeholder="Tambahkan keterangan untuk media Anda..." rows="3">${caption}</textarea>
+                                    </div>
+                                    <div class="edit-form-group">
+                                        <label for="editFolder" class="edit-form-label">Folder</label>
+                                        <select id="editFolder" name="folder_id" class="edit-form-select">
+                                            <option value="none">Tidak ada folder</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="edit-modal-footer">
+                                <button type="button" class="edit-btn edit-btn-secondary" onclick="hideEditModal()">Batal</button>
+                                <button type="submit" form="editAssetForm" class="edit-btn edit-btn-primary">Simpan Perubahan</button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="editCaption">Keterangan</label>
-                            <textarea id="editCaption" name="caption">${caption}</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="editFolder">Folder</label>
-                            <select id="editFolder" name="folder_id">
-                                <option value="none">Tidak ada folder</option>
-                            </select>
-                        </div>
-                        <button type="submit">Simpan Perubahan</button>
-                    </form>
+                    </div>
                 </div>
             `;
 
             const modal = document.createElement('div');
             modal.id = 'editModal';
-            modal.className = 'modal';
             modal.innerHTML = modalContent;
             document.body.appendChild(modal);
+
+            // Add fade-in animation
+            setTimeout(() => {
+                const overlay = document.getElementById('editModalOverlay');
+                if (overlay) {
+                    overlay.classList.add('active');
+                }
+            }, 10);
 
             // Populate folder options
             const editFolderSelect = document.getElementById('editFolder');
