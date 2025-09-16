@@ -2049,6 +2049,14 @@
                     const folderName = folderItem.getAttribute('data-folder-name');
                     if (folderId && folderName) {
                         selectFolder(folderId, folderName, event);
+
+                        // Auto-close sidebar on mobile after selecting folder
+                        if (window.innerWidth <= 768) {
+                            const sidebar = document.querySelector('.sidebar');
+                            if (sidebar && sidebar.classList.contains('show')) {
+                                toggleSidebar();
+                            }
+                        }
                     }
                 }
             });

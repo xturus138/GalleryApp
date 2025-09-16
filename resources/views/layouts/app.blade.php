@@ -702,7 +702,7 @@
                     const sidebar = document.querySelector('.sidebar');
                     const overlay = document.querySelector('.sidebar-overlay');
                     const isMobile = window.innerWidth <= 768;
-    
+            
                     if (isMobile) {
                         const sidebarOpen = localStorage.getItem('sidebarOpen') === 'true';
                         if (sidebarOpen) {
@@ -711,6 +711,15 @@
                             document.body.classList.add('no-scroll');
                         }
                     }
+        
+                    // Auto-close sidebar on mobile when clicking menu links
+                    document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                        link.addEventListener('click', function() {
+                            if (window.innerWidth <= 768 && sidebar.classList.contains('show')) {
+                                toggleSidebar();
+                            }
+                        });
+                    });
                 });
     
             document.getElementById('logoutLink').addEventListener('click', function(event) {
