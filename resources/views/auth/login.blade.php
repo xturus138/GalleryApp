@@ -293,7 +293,7 @@
 
             /* Responsive Modal Styles */
             .modal {
-                padding: 2rem; /* increased padding for margin on mobile */
+                padding: 12px;
             }
 
             .modal-content {
