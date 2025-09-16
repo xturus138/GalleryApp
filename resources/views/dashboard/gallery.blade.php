@@ -1735,7 +1735,7 @@
             // Always add first page
             pages.push(1);
             
-            // Add ellipsis if needed
+            // Add ellipsis if needed after first
             if (current > delta + 2) {
                 pages.push('...');
             }
@@ -1745,20 +1745,22 @@
                 pages.push(i);
             }
             
-            // Add ellipsis if needed
+            // Add ellipsis if needed before last
             if (current < last - delta - 1) {
                 pages.push('...');
             }
             
-            // Always add last page if not already included
-            if (last !== current && last > pages[pages.length - 1]) {
-                pages.push(last);
+            // Always add last page, handling if last element is ellipsis
+            if (last > 1) {
+                const lastEl = pages[pages.length - 1];
+                if (typeof lastEl === 'number' && lastEl < last || typeof lastEl === 'string') {
+                    pages.push(last);
+                }
             }
             
-            // Remove duplicates (e.g., if current is 1 or last)
-            const uniquePages = [...new Set(pages)];
+            // No need for unique as pages are in order without duplicates
             
-            uniquePages.forEach(page => {
+            pages.forEach(page => {
                 if (page === '...') {
                     const ellipsis = document.createElement('span');
                     ellipsis.textContent = '...';
@@ -2153,7 +2155,7 @@
             // Always add first page
             pages.push(1);
             
-            // Add ellipsis if needed
+            // Add ellipsis if needed after first
             if (current > delta + 2) {
                 pages.push('...');
             }
@@ -2163,20 +2165,22 @@
                 pages.push(i);
             }
             
-            // Add ellipsis if needed
+            // Add ellipsis if needed before last
             if (current < last - delta - 1) {
                 pages.push('...');
             }
             
-            // Always add last page if not already included
-            if (last !== current && last > pages[pages.length - 1]) {
-                pages.push(last);
+            // Always add last page, handling if last element is ellipsis
+            if (last > 1) {
+                const lastEl = pages[pages.length - 1];
+                if (typeof lastEl === 'number' && lastEl < last || typeof lastEl === 'string') {
+                    pages.push(last);
+                }
             }
             
-            // Remove duplicates (e.g., if current is 1 or last)
-            const uniquePages = [...new Set(pages)];
+            // No need for unique as pages are in order without duplicates
             
-            uniquePages.forEach(page => {
+            pages.forEach(page => {
                 if (page === '...') {
                     const ellipsis = document.createElement('span');
                     ellipsis.textContent = '...';
