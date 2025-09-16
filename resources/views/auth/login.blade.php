@@ -290,6 +290,75 @@
             .social-buttons {
                 flex-direction: column;
             }
+
+            /* Responsive Modal Styles */
+            .modal {
+                padding: 2rem; /* increased padding for margin on mobile */
+            }
+
+            .modal-content {
+                margin: 0;
+                padding: 1.5rem;
+                width: 100%;
+                border-radius: 0.75rem;
+                box-sizing: border-box; /* added for proper sizing */
+                max-width: 360px; /* slightly smaller max width for mobile */
+            }
+
+            .modal-content h2 {
+                font-size: 1.125rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .modal p {
+                font-size: 0.9375rem;
+                line-height: 1.5;
+                margin: 0.75rem 0 1rem 0;
+                white-space: normal;
+                word-wrap: break-word;
+            }
+
+            .modal-content .close {
+                font-size: 24px;
+                right: 0.75rem;
+                top: 0.75rem;
+            }
+
+            .modal-content > div.modal-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: stretch;
+            }
+
+            .modal-content > div.modal-buttons button {
+                width: 100%;
+                padding: 0.875rem;
+                font-size: 0.9375rem;
+                border-radius: 0.5rem;
+                cursor: pointer;
+                font-weight: 600;
+                border: none;
+                transition: background-color 0.3s;
+            }
+
+            .modal-content > div.modal-buttons button.continue-btn {
+                background-color: var(--primary-color);
+                color: white;
+            }
+
+            .modal-content > div.modal-buttons button.continue-btn:hover {
+                background-color: #333333;
+            }
+
+            .modal-content > div.modal-buttons button.cancel-btn {
+                background-color: #6c757d;
+                color: white;
+            }
+
+            .modal-content > div.modal-buttons button.cancel-btn:hover {
+                background-color: #5a6268;
+            }
         }
 
         /* Modal Styles */
@@ -303,14 +372,17 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
             animation: fadeIn 0.3s ease-out;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
         }
 
         .modal-content {
             background-color: var(--card-bg);
-            margin: 15% auto;
+            margin: 0;
             padding: 2rem;
             border-radius: 0.5rem;
-            width: 90%;
+            width: 100%;
             max-width: 400px;
             text-align: center;
             box-shadow: var(--shadow-light);
@@ -402,6 +474,7 @@
             <button type="submit" class="btn" id="loginBtn" aria-describedby="login-description">Login</button>
         </form>
         <p class="beta-note">Note: This app is still in beta and may contain bugs, but your data storage is secure.</p>
+        <p id="mobileNote" class="beta-note" style="display: none; margin-top: 1rem; font-style: normal;">You are currently viewing this website on a mobile device. For the best experience, we recommend using a desktop or tablet. Some features may not be fully optimized on mobile.</p>
     </div>
 
     <!-- Forgot Password Modal -->
@@ -410,6 +483,20 @@
             <button class="close" aria-label="Close modal">&times;</button>
             <h2>Forgot Your PIN?</h2>
             <p>Untuk reset password, hubungi orang paling ganteng!</p>
+        </div>
+    </div>
+
+    <!-- Mobile Detection Modal -->
+    <div id="mobileModal" class="modal">
+        <div class="modal-content">
+            <button class="close" aria-label="Close">&times;</button>
+            <h2>Mobile Device Detected</h2>
+            <p>You are currently viewing this website on a mobile device.<br>
+            For the best experience, we recommend using a desktop or tablet. Some features may not be fully optimized on mobile.</p>
+            <div class="modal-buttons" style="margin-top: 1rem;">
+                <button id="continueLogin" class="continue-btn">Continue Login</button>
+                <button id="cancelLogin" class="cancel-btn">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -423,6 +510,12 @@
             const submitBtn = document.getElementById('loginBtn');
             const loadingOverlay = document.getElementById('loadingOverlay');
             const pinInput = document.getElementById('pin');
+            const mobileNote = document.getElementById('mobileNote');
+
+            // Show mobile note if on mobile
+            if (mobileNote && window.innerWidth <= 768) {
+                mobileNote.style.display = 'block';
+            }
 
             // Restrict PIN input to numbers only
             pinInput.addEventListener('input', function(e) {
@@ -441,22 +534,60 @@
 
             // Modal functionality
             const forgotLink = document.querySelector('.forgot-link');
-            const modal = document.getElementById('forgotModal');
-            const closeBtn = modal.querySelector('.close');
+            const forgotModal = document.getElementById('forgotModal');
+            const forgotCloseBtn = forgotModal ? forgotModal.querySelector('.close') : null;
 
-            if (forgotLink && modal && closeBtn) {
+            if (forgotLink && forgotModal && forgotCloseBtn) {
                 forgotLink.addEventListener('click', function(e) {
                     e.preventDefault();
-                    modal.style.display = 'block';
+                    forgotModal.style.display = 'flex';
                 });
 
-                closeBtn.addEventListener('click', function() {
-                    modal.style.display = 'none';
+                forgotCloseBtn.addEventListener('click', function() {
+                    forgotModal.style.display = 'none';
                 });
 
                 window.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
+                    if (e.target === forgotModal) {
+                        forgotModal.style.display = 'none';
+                    }
+                });
+            }
+
+            // Mobile login popup functionality
+            const mobileModal = document.getElementById('mobileModal');
+            const mobileCloseBtn = mobileModal ? mobileModal.querySelector('.close') : null;
+            const continueBtn = document.getElementById('continueLogin');
+            const cancelBtn = document.getElementById('cancelLogin');
+
+            if (mobileModal && continueBtn && cancelBtn && submitBtn) {
+                submitBtn.addEventListener('click', function(e) {
+                    if (window.innerWidth <= 768) {
+                        e.preventDefault();
+                        mobileModal.style.display = 'flex';
+                        return false;
+                    }
+                });
+
+                if (mobileCloseBtn) {
+                    mobileCloseBtn.addEventListener('click', function() {
+                        mobileModal.style.display = 'none';
+                    });
+                }
+
+                continueBtn.addEventListener('click', function() {
+                    mobileModal.style.display = 'none';
+                    form.submit();
+                });
+
+                cancelBtn.addEventListener('click', function() {
+                    mobileModal.style.display = 'none';
+                });
+
+                // Close on outside click for mobile modal
+                window.addEventListener('click', function(e) {
+                    if (e.target === mobileModal) {
+                        mobileModal.style.display = 'none';
                     }
                 });
             }
