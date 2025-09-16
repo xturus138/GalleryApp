@@ -5,9 +5,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\FolderController; // Import FolderController
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\InsightController;
-use App\Http\Controllers\PeopleController;
-use App\Http\Controllers\InboxController;
 
 Route::get('/', function () {
     return view('auth.login');
@@ -48,12 +45,4 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Insight route
-    Route::get('/insight', [InsightController::class, 'index'])->name('insight');
-
-    // People route
-    Route::get('/people', [PeopleController::class, 'index'])->name('people');
-
-    // Inbox route
-    Route::get('/inbox', [InboxController::class, 'index'])->name('inbox');
 });

@@ -561,31 +561,6 @@
                         </svg>
                         Dashboard
                     </a></li>
-                    <li><a href="/insight">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 3v18h18"></path>
-                            <path d="M18 9h-12"></path>
-                            <path d="M12 3v6"></path>
-                            <path d="M6 3v6"></path>
-                            <path d="M18 15h-12"></path>
-                            <path d="M12 9v6"></path>
-                            <path d="M6 9v6"></path>
-                        </svg>
-                        Insight
-                    </a></li>
-                    <li><a href="/people">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4-4V9a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2a4 4 0 0 0 4 4v2a4 4 0 0 0-4 4zM8 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
-                        </svg>
-                        People
-                    </a></li>
-                    <li><a href="/inbox">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M22 4H2c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h18c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1z"></path>
-                            <polyline points="22 6 12 13 2 6"></polyline>
-                        </svg>
-                        Inbox
-                    </a></li>
                     <li><a href="{{ route('profile.show') }}" class="{{ Route::is('profile.show') ? 'active' : '' }}">
                         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4-4V7a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v12a4 4 0 0 0 4 4h0"></path>
