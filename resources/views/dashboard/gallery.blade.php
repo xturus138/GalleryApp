@@ -1077,6 +1077,142 @@
             }
         }
 
+        /* Modern Folder List Styles */
+        .modern-folder-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modern-folder-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modern-folder-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            border-color: #6366f1;
+        }
+
+        .modern-folder-item:hover::before {
+            opacity: 1;
+        }
+
+        .folder-link {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            text-decoration: none;
+            color: #374151;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            padding: 4px 0;
+        }
+
+        .folder-link:hover {
+            color: #6366f1;
+        }
+
+        .folder-icon {
+            margin-right: 12px;
+            color: #6366f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .modern-folder-item:hover .folder-icon {
+            background: rgba(99, 102, 241, 0.2);
+            transform: scale(1.05);
+        }
+
+        .folder-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .folder-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .modern-folder-item:hover .folder-actions {
+            opacity: 1;
+        }
+
+        .folder-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .folder-action-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .edit-btn:hover {
+            color: #059669;
+        }
+
+        .delete-btn:hover {
+            color: #ef4444;
+        }
+
+        /* Mobile adjustments for folder items */
+        @media (max-width: 768px) {
+            .modern-folder-item {
+                padding: 14px 15px;
+                margin-bottom: 10px;
+            }
+
+            .folder-actions {
+                opacity: 1; /* Always show on mobile */
+            }
+
+            .folder-icon {
+                width: 28px;
+                height: 28px;
+            }
+
+            .folder-name {
+                font-size: 13px;
+            }
+        }
+
         /* Modern Edit Modal Styles */
         .edit-modal-overlay {
             position: fixed;
@@ -1784,50 +1920,35 @@
             folderSidebar.innerHTML = '';
 
             folders.forEach(folder => {
-                const li = document.createElement('li');
-                li.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 5px 0;';
-
-                const a = document.createElement('a');
-                a.href = '#';
-                a.innerText = folder.name;
-                a.style.cssText = 'flex-grow: 1; text-decoration: none; color: #495057;';
-                a.onclick = (e) => {
-                    e.preventDefault();
-                    document.getElementById('current-view-title').innerText = folder.name;
-                    fetchAssets(folder.id, 1); // Reset to page 1 when switching folders
-
-                    // Auto-close menu on mobile after clicking folder
-                    if (window.innerWidth < 768) {
-                        document.querySelector('.sidebar').classList.remove('show');
-                        document.querySelector('.sidebar-overlay').classList.remove('show');
-                    }
-                };
-
-                const buttonContainer = document.createElement('div');
-                buttonContainer.style.cssText = 'display: flex; gap: 5px;';
-
-                const editButton = document.createElement('button');
-                editButton.innerText = '✏️';
-                editButton.style.cssText = 'background: none; border: none; cursor: pointer; font-size: 0.8rem;';
-                editButton.onclick = (e) => {
-                    e.stopPropagation();
-                    showEditFolderModal(folder.id, folder.name);
-                };
-
-                const deleteButton = document.createElement('button');
-                deleteButton.innerText = '🗑️';
-                deleteButton.style.cssText = 'background: none; border: none; cursor: pointer; font-size: 0.8rem;';
-                deleteButton.onclick = (e) => {
-                    e.stopPropagation();
-                    deleteFolder(folder.id, folder.name);
-                };
-
-                buttonContainer.appendChild(editButton);
-                buttonContainer.appendChild(deleteButton);
-
-                li.appendChild(a);
-                li.appendChild(buttonContainer);
-                folderSidebar.appendChild(li);
+                const folderItem = document.createElement('div');
+                folderItem.className = 'modern-folder-item';
+                folderItem.innerHTML = `
+                    <a href="#" class="folder-link" onclick="selectFolder(${folder.id}, '${folder.name}')">
+                        <div class="folder-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <span class="folder-name">${folder.name}</span>
+                    </a>
+                    <div class="folder-actions">
+                        <button class="folder-action-btn edit-btn" onclick="showEditFolderModal(${folder.id}, '${folder.name}')" title="Edit">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </button>
+                        <button class="folder-action-btn delete-btn" onclick="deleteFolder(${folder.id}, '${folder.name}')" title="Delete">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3,6 5,6 21,6"></polyline>
+                                <path d="m19,6v14a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6m3,0V4a2,2 0 0,1,2-2h4a2,2 0 0,1,2,2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                folderSidebar.appendChild(folderItem);
             });
 
             // Handle pagination
@@ -1836,6 +1957,11 @@
             } else {
                 document.getElementById('folders-pagination').style.display = 'none';
             }
+        }
+
+        function selectFolder(folderId, folderName) {
+            document.getElementById('current-view-title').innerText = folderName;
+            fetchAssets(folderId, 1); // Reset to page 1 when switching folders
         }
 
         function renderFoldersPagination(paginationData) {
@@ -1903,11 +2029,7 @@
             const sidebarLinks = document.querySelectorAll('.sidebar-menu a, .sidebar-menu li a');
             sidebarLinks.forEach(link => {
                 link.addEventListener('click', () => {
-                    if (window.innerWidth < 768) {
-                        // Close sidebar on mobile after clicking a menu item
-                        document.querySelector('.sidebar').classList.remove('show');
-                        document.querySelector('.sidebar-overlay').classList.remove('show');
-                    }
+                    // Removed auto-close to keep sidebar fixed/open
                 });
             });
         }

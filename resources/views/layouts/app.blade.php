@@ -19,16 +19,17 @@
             flex-grow: 1;
         }
         .sidebar {
-            width: 250px;
-            background-color: #ffffff;
-            border-right: 1px solid #e9ecef;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            width: 280px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-right: 1px solid #e2e8f0;
+            padding: 24px;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
             transition: all 0.3s ease;
             position: relative;
             animation: slideInLeft 0.5s ease-out;
+            border-radius: 0 16px 16px 0;
         }
         @media (max-width: 768px) {
             .sidebar {
@@ -59,20 +60,30 @@
         .user-info {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 10px;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-            background-color: #f1f3f5;
+            gap: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #d1d5db;
+            transition: all 0.2s ease;
+        }
+        .user-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         .user-info img {
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .user-info .user-name {
-            font-weight: bold;
-            color: #333;
+            font-weight: 600;
+            color: #1f2937;
+            font-size: 16px;
         }
         .sidebar-menu {
             list-style: none;
@@ -237,10 +248,10 @@
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                top: 0;
+                top: 60px;
                 left: 0;
                 width: 70%;
-                height: 100vh;
+                height: calc(100vh - 60px);
                 z-index: 1500;
                 transform: translateX(-100%);
                 opacity: 0;
@@ -248,6 +259,7 @@
                 transition: all 0.3s ease;
                 padding: 20px;
                 box-sizing: border-box;
+                border-radius: 0 0 16px 0;
             }
             .sidebar.show {
                 transform: translateX(0);
