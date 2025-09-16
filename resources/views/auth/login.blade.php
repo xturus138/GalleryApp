@@ -339,6 +339,14 @@
             font-size: 1rem;
             color: var(--text-color);
         }
+
+        .beta-note {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 1rem;
+            text-align: center;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -382,6 +390,7 @@
 
             <button type="submit" class="btn" id="loginBtn" aria-describedby="login-description">Login</button>
         </form>
+        <p class="beta-note">Note: This app is still in beta and may contain bugs, but your data storage is secure.</p>
     </div>
 
     <!-- Forgot Password Modal -->

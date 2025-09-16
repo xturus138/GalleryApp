@@ -134,6 +134,13 @@
             font-weight: 400;
             margin-top: 2px;
         }
+        .beta-version {
+            font-size: 12px;
+            color: #9ca3af;
+            font-weight: 400;
+            margin-top: 4px;
+            letter-spacing: 0.025em;
+        }
         .sidebar-menu {
             list-style: none;
             padding: 0;
@@ -550,6 +557,7 @@
                     <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : '/placeholder-user.jpg' }}" alt="User Avatar">
                     <div class="user-details">
                         <div class="user-name">{{ Auth::user()->name }}</div>
+                        <div class="beta-version">beta v0,5.0</div>
                         <div class="user-email">{{ Auth::user()->email }}</div>
                     </div>
                 </div>
