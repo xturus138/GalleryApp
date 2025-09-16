@@ -22,7 +22,7 @@
             width: 300px;
             max-width: 320px;
             min-width: 280px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            background: #ffffff;
             border-right: 1px solid #e2e8f0;
             padding: 24px;
             box-shadow: 4px 0 20px rgba(0,0,0,0.08);
@@ -58,17 +58,6 @@
             text-align: center;
             margin-bottom: 2rem;
             position: relative;
-        }
-        .sidebar-header::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #6366f1, #4f46e5);
-            border-radius: 2px;
         }
         .sidebar-header {
             position: relative;
@@ -108,26 +97,15 @@
             padding: 20px;
             margin-bottom: 28px;
             border-radius: 16px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            background: #ffffff;
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
             border: 1px solid #e2e8f0;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
         }
-        .user-info::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #6366f1, #4f46e5, #7c3aed);
-        }
         .user-info:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-            border-color: #6366f1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         .user-info img {
             width: 56px;
@@ -150,12 +128,11 @@
             margin-bottom: 4px;
             letter-spacing: -0.025em;
         }
-        .user-info .user-role {
-            font-size: 13px;
+        .user-info .user-email {
+            font-size: 14px;
             color: #6b7280;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-weight: 400;
+            margin-top: 2px;
         }
         .sidebar-menu {
             list-style: none;
@@ -173,36 +150,26 @@
             text-decoration: none;
             color: #495057;
             border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             font-weight: 500;
             font-size: 14px;
             position: relative;
-            overflow: hidden;
         }
-        .sidebar-menu a::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            transform: scaleY(0);
-            transition: transform 0.3s ease;
-            border-radius: 0 4px 4px 0;
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            flex-shrink: 0;
         }
         .sidebar-menu a:hover {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%);
-            color: #6366f1;
-            transform: translateX(4px);
-        }
-        .sidebar-menu a:hover::before {
-            transform: scaleY(1);
+            background-color: #f9fafb;
+            color: #1f2937;
         }
         .sidebar-menu a.active {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            background-color: #f3f4f6;
+            color: #111827;
+            font-weight: 600;
         }
         .search-container {
             position: relative;
@@ -212,26 +179,26 @@
         .search-input {
             width: 100%;
             padding: 12px 40px 12px 40px;
-            border: 2px solid var(--border-color);
+            border: 2px solid #e2e8f0;
             border-radius: 12px;
             box-sizing: border-box;
             font-size: 14px;
             font-weight: 500;
-            color: var(--text-secondary);
-            background: var(--bg-primary);
+            color: #495057;
+            background: #ffffff;
             transition: all 0.3s ease;
             position: relative;
         }
 
         .search-input:focus {
             outline: none;
-            border-color: var(--brand-primary);
+            border-color: #6366f1;
             box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
             transform: translateY(-1px);
         }
 
         .search-input::placeholder {
-            color: var(--text-light);
+            color: #9ca3af;
             font-weight: 400;
         }
 
@@ -240,7 +207,7 @@
             left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-light);
+            color: #9ca3af;
             width: 18px;
             height: 18px;
             pointer-events: none;
@@ -256,14 +223,14 @@
             cursor: pointer;
             padding: 4px;
             border-radius: 50%;
-            color: var(--text-light);
+            color: #9ca3af;
             display: none;
             transition: all 0.2s ease;
         }
 
         .clear-search-btn:hover {
-            background: var(--bg-hover);
-            color: var(--text-muted);
+            background: #f3f4f6;
+            color: #6b7280;
         }
 
         .search-input:not(:placeholder-shown) + .clear-search-btn {
@@ -500,7 +467,7 @@
             .user-info .user-name {
                 font-size: 15px;
             }
-            .user-info .user-role {
+            .user-info .user-email {
                 font-size: 12px;
             }
             .sidebar-menu a {
@@ -583,14 +550,58 @@
                     <img src="{{ Auth::user()->photo ? asset('storage/' . Auth::user()->photo) : '/placeholder-user.jpg' }}" alt="User Avatar">
                     <div class="user-details">
                         <div class="user-name">{{ Auth::user()->name }}</div>
-                        <div class="user-role">Gallery User</div>
+                        <div class="user-email">{{ Auth::user()->email }}</div>
                     </div>
                 </div>
                 <ul class="sidebar-menu">
-                    <li><a href="{{ route('dashboard') }}" id="all-media-link">🏠 All Media</a></li>
-                    <li><a href="{{ route('profile.show') }}">👤 Profile</a></li>
-                    <li><a href="#" onclick="showCreateFolderModal()">📂 Folder Baru</a></li>
-                    <li style="margin-top: 10px; font-weight: bold; color: #495057;">Daftar Folder:</li>
+                    <li><a href="{{ route('dashboard') }}" class="{{ Route::is('dashboard') ? 'active' : '' }}" id="all-media-link">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        Dashboard
+                    </a></li>
+                    <li><a href="/insight">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 3v18h18"></path>
+                            <path d="M18 9h-12"></path>
+                            <path d="M12 3v6"></path>
+                            <path d="M6 3v6"></path>
+                            <path d="M18 15h-12"></path>
+                            <path d="M12 9v6"></path>
+                            <path d="M6 9v6"></path>
+                        </svg>
+                        Insight
+                    </a></li>
+                    <li><a href="/people">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4-4V9a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2a4 4 0 0 0 4 4v2a4 4 0 0 0-4 4zM8 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM8 17a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+                        </svg>
+                        People
+                    </a></li>
+                    <li><a href="/inbox">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 4H2c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h18c.55 0 1-.45 1-1V5c0-.55-.45-1-1-1z"></path>
+                            <polyline points="22 6 12 13 2 6"></polyline>
+                        </svg>
+                        Inbox
+                    </a></li>
+                    <li><a href="{{ route('profile.show') }}" class="{{ Route::is('profile.show') ? 'active' : '' }}">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4-4V7a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v12a4 4 0 0 0 4 4h0"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        Profile
+                    </a></li>
+                    <li><a href="#" onclick="showCreateFolderModal()">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            <line x1="12" y1="11" x2="12" y2="17"></line>
+                            <line x1="9" y1="14" x2="15" y2="14"></line>
+                        </svg>
+                        Folder Baru
+                    </a></li>
+                    <li style="margin-top: 10px; font-weight: bold; color: #495057; padding: 8px 18px;">Daftar Folder:</li>
                     <div class="search-container">
                         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -605,7 +616,7 @@
                         </button>
                     </div>
                     <div id="folders-list-container">
-                        </div>
+                    </div>
                     <!-- Pagination for Folders -->
                     <div id="folders-pagination" class="modern-pagination" style="display: none; margin-top: 16px;">
                         <button id="folders-prev" class="pagination-arrow" aria-label="Previous page">
