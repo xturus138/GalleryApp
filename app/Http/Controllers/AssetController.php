@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class AssetController extends Controller
 {
@@ -38,6 +40,7 @@ class AssetController extends Controller
             $asset->formatted_size = SizeHelper::formatSize($asset->file_size);
             $asset->likes_count = $asset->hearts()->count();
             $asset->is_liked_by_user = $asset->isLikedBy(Auth::user());
+            $asset->thumbnail_url = $asset->thumbnail_url ?? ($asset->file_type && str_starts_with($asset->file_type, 'image/') ? null : '/video-thumbnail.png');
             return $asset;
         });
 
@@ -58,6 +61,7 @@ class AssetController extends Controller
             $asset->formatted_size = SizeHelper::formatSize($asset->file_size);
             $asset->likes_count = $asset->hearts()->count();
             $asset->is_liked_by_user = $asset->isLikedBy(Auth::user());
+            $asset->thumbnail_url = $asset->thumbnail_url ?? ($asset->file_type && str_starts_with($asset->file_type, 'image/') ? null : '/video-thumbnail.png');
             return $asset;
         });
 
@@ -95,9 +99,29 @@ class AssetController extends Controller
 
                 $path = 'uploads/' . Auth::id();
                 $fullPath = $file->storeAs($path, $filename, 'public');
+                $fullFilePath = storage_path('app/public/' . $fullPath);
 
                 $fileSize = $file->getSize();
                 $fileType = $file->getClientMimeType();
+
+                $thumbnailUrl = null;
+                if (str_starts_with($fileType, 'image/')) {
+                    $thumbPath = 'thumbnails/' . Auth::id();
+                    $thumbFilename = pathinfo($filename, PATHINFO_FILENAME) . '_thumb.jpg';
+                    $thumbFullPath = storage_path('app/public/' . $thumbPath . '/' . $thumbFilename);
+
+                    // Create directory if not exists
+                    Storage::disk('public')->makeDirectory($thumbPath);
+
+                    $manager = new ImageManager(new Driver());
+                    $image = $manager->read($fullFilePath)->contain(300, 300);
+                    $image->toJpeg(80)->save($thumbFullPath);
+
+                    $thumbnailUrl = Storage::url($thumbPath . '/' . $thumbFilename);
+                } else {
+                    // For videos and others, use default thumbnail
+                    $thumbnailUrl = '/video-thumbnail.png';
+                }
 
                 $asset = Asset::create([
                     'id' => Str::uuid(),
@@ -107,6 +131,7 @@ class AssetController extends Controller
                     'file_type' => $fileType,
                     'file_size' => $fileSize,
                     'blob_url' => Storage::url($fullPath),
+                    'thumbnail_url' => $thumbnailUrl,
                     'uploaded_by' => Auth::id(),
                     'caption' => $caption,
                     'folder_id' => ($folderId === 'none') ? null : $folderId,

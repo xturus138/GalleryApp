@@ -1658,10 +1658,20 @@
 
             assets.forEach((asset, index) => {
                 let mediaHtml = '';
+                let thumbnailSrc = asset.thumbnail_url || (asset.file_type && asset.file_type.startsWith('image/') ? asset.blob_url : '/video-thumbnail.png');
                 if (asset.file_type.startsWith('image/')) {
-                    mediaHtml = `<img src="${asset.blob_url}" alt="${asset.title || asset.original_filename}">`;
+                    mediaHtml = `<img src="${thumbnailSrc}" loading="lazy" alt="${asset.title || asset.original_filename}">`;
                 } else if (asset.file_type.startsWith('video/')) {
-                    mediaHtml = `<video poster="/video-thumbnail.png" src="${asset.blob_url}" controls></video>`;
+                    mediaHtml = `
+                        <div class="video-thumbnail-container" data-asset-url="${asset.blob_url}" data-asset-id="${asset.id}" onclick="showAssetViewer('${asset.blob_url}', '${asset.file_type}', '${asset.title || asset.original_filename}', '${asset.id}')">
+                            <img src="${thumbnailSrc}" loading="lazy" alt="${asset.title || asset.original_filename}" style="width: 100%; height: 100%; object-fit: cover;">
+                            <div class="play-overlay">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="white" style="opacity: 0.9;">
+                                    <polygon points="5,3 19,12 5,21 5,3"></polygon>
+                                </svg>
+                            </div>
+                        </div>
+                    `;
                 } else {
                     mediaHtml = `<img src="/file-icon.png" alt="File">`;
                 }
@@ -1819,6 +1829,7 @@
                 video.src = url;
                 video.controls = true;
                 video.autoplay = true;
+                video.preload = 'metadata';
                 mediaContainer.appendChild(video);
             }
 
