@@ -805,6 +805,8 @@
             display: flex;
             gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .pagination-text {
@@ -1765,19 +1767,53 @@
             const current = paginationData.current_page;
             const last = paginationData.last_page;
 
-            // Add page numbers
+            // Add page numbers with ellipsis
+            const delta = 2;
             const pages = [];
-            for (let i = 1; i <= last; i++) pages.push(i);
-
-            pages.forEach(page => {
-                const pageBtn = document.createElement('button');
-                pageBtn.textContent = page;
-                pageBtn.className = 'pagination-btn';
-                if (page === current) {
-                    pageBtn.disabled = true;
+            
+            // Always add first page
+            pages.push(1);
+            
+            // Add ellipsis if needed
+            if (current > delta + 2) {
+                pages.push('...');
+            }
+            
+            // Add pages around current
+            for (let i = Math.max(2, current - delta); i <= Math.min(last - 1, current + delta); i++) {
+                pages.push(i);
+            }
+            
+            // Add ellipsis if needed
+            if (current < last - delta - 1) {
+                pages.push('...');
+            }
+            
+            // Always add last page if not already included
+            if (last !== current && last > pages[pages.length - 1]) {
+                pages.push(last);
+            }
+            
+            // Remove duplicates (e.g., if current is 1 or last)
+            const uniquePages = [...new Set(pages)];
+            
+            uniquePages.forEach(page => {
+                if (page === '...') {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.className = 'pagination-ellipsis';
+                    pageNumbersContainer.appendChild(ellipsis);
+                } else {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.textContent = page;
+                    pageBtn.className = 'pagination-btn';
+                    if (page === current) {
+                        pageBtn.classList.add('active');
+                        pageBtn.disabled = true;
+                    }
+                    pageBtn.onclick = () => fetchAssets(currentFolderId, page);
+                    pageNumbersContainer.appendChild(pageBtn);
                 }
-                pageBtn.onclick = () => fetchAssets(currentFolderId, page);
-                pageNumbersContainer.appendChild(pageBtn);
             });
 
             paginationContainer.style.display = 'flex';
@@ -2193,20 +2229,53 @@
             const last = paginationData.last_page;
 
 
-            // Add page numbers
+            // Add page numbers with ellipsis
+            const delta = 2;
             const pages = [];
-            for (let i = 1; i <= last; i++) pages.push(i);
-
-            pages.forEach(page => {
-                const pageBtn = document.createElement('button');
-                pageBtn.textContent = page;
-                pageBtn.className = 'pagination-btn';
-                if (page === current) {
-                    pageBtn.classList.add('active');
-                    pageBtn.disabled = true;
+            
+            // Always add first page
+            pages.push(1);
+            
+            // Add ellipsis if needed
+            if (current > delta + 2) {
+                pages.push('...');
+            }
+            
+            // Add pages around current
+            for (let i = Math.max(2, current - delta); i <= Math.min(last - 1, current + delta); i++) {
+                pages.push(i);
+            }
+            
+            // Add ellipsis if needed
+            if (current < last - delta - 1) {
+                pages.push('...');
+            }
+            
+            // Always add last page if not already included
+            if (last !== current && last > pages[pages.length - 1]) {
+                pages.push(last);
+            }
+            
+            // Remove duplicates (e.g., if current is 1 or last)
+            const uniquePages = [...new Set(pages)];
+            
+            uniquePages.forEach(page => {
+                if (page === '...') {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.textContent = '...';
+                    ellipsis.className = 'pagination-ellipsis';
+                    pageNumbersContainer.appendChild(ellipsis);
+                } else {
+                    const pageBtn = document.createElement('button');
+                    pageBtn.textContent = page;
+                    pageBtn.className = 'pagination-btn';
+                    if (page === current) {
+                        pageBtn.classList.add('active');
+                        pageBtn.disabled = true;
+                    }
+                    pageBtn.onclick = () => fetchFolders(page);
+                    pageNumbersContainer.appendChild(pageBtn);
                 }
-                pageBtn.onclick = () => fetchFolders(page);
-                pageNumbersContainer.appendChild(pageBtn);
             });
 
 
