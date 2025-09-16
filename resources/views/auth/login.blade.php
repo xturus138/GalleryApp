@@ -318,26 +318,37 @@
         }
 
         .close {
+            background: none;
+            border: none;
             color: #aaa;
-            float: right;
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
             position: absolute;
             right: 1rem;
             top: 1rem;
+            padding: 0;
+            line-height: 1;
         }
 
         .close:hover,
         .close:focus {
             color: var(--text-color);
             text-decoration: none;
+            outline: none;
         }
 
         .modal p {
             margin: 1rem 0 0 0;
             font-size: 1rem;
             color: var(--text-color);
+        }
+
+        .modal-content h2 {
+            margin: 0 0 1rem 0;
+            font-size: 1.25rem;
+            color: var(--text-color);
+            font-weight: 600;
         }
 
         .beta-note {
@@ -396,7 +407,8 @@
     <!-- Forgot Password Modal -->
     <div id="forgotModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <button class="close" aria-label="Close modal">&times;</button>
+            <h2>Forgot Your PIN?</h2>
             <p>Untuk reset password, hubungi orang paling ganteng!</p>
         </div>
     </div>
@@ -430,7 +442,7 @@
             // Modal functionality
             const forgotLink = document.querySelector('.forgot-link');
             const modal = document.getElementById('forgotModal');
-            const closeBtn = document.querySelector('.close');
+            const closeBtn = modal.querySelector('.close');
 
             if (forgotLink && modal && closeBtn) {
                 forgotLink.addEventListener('click', function(e) {
