@@ -1723,8 +1723,8 @@
                             </div>
                             <div class="card-meta">
                                 <span class="meta-item file-size">${asset.formatted_size}</span>
-                                <button class="like-btn" data-asset-id="${asset.id}" aria-label="Like button">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="${asset.is_liked_by_user ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" class="heart-icon">
+                                <button class="like-btn" data-asset-id="${asset.id}" data-is-liked="${asset.is_liked_by_user ? 'true' : 'false'}" aria-label="Like button">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="${asset.is_liked_by_user ? 'red' : 'none'}" stroke="currentColor" stroke-width="2" class="heart-icon">
                                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                     </svg>
                                     <span class="like-count">${asset.likes_count}</span>
@@ -2269,14 +2269,14 @@
 
         // Handle like/unlike functionality
         document.addEventListener('click', function(event) {
-            if (event.target.closest('.like-button')) {
-                const button = event.target.closest('.like-button');
+            if (event.target.closest('.like-btn')) {
+                const button = event.target.closest('.like-btn');
                 const assetId = button.getAttribute('data-asset-id');
-                const likeIcon = button.querySelector('.like-icon');
+                const likeIcon = button.querySelector('.heart-icon');
                 const likeCount = button.querySelector('.like-count');
 
-                const isLiked = likeIcon.style.color === 'red';
-                const url = isLiked ? `/assets/${assetId}/like` : `/assets/${assetId}/like`;
+                const isLiked = button.getAttribute('data-is-liked') === 'true';
+                const url = `/assets/${assetId}/like`;
                 const method = isLiked ? 'DELETE' : 'POST';
 
                 fetch(url, {
@@ -2289,10 +2289,12 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        likeIcon.style.color = isLiked ? 'gray' : 'red';
-                        likeCount.textContent = data.likes_count;
+                        const newLiked = !isLiked;
+                        button.setAttribute('data-is-liked', newLiked.toString());
+                        likeIcon.setAttribute('fill', newLiked ? 'red' : 'none');
+                        likeCount.textContent = data.likes_count || 0;
                     } else {
-                        alert('Error: ' + (data.error || 'Something went wrong'));
+                        alert('Error: ' + (data.error || data.message || 'Something went wrong'));
                     }
                 })
                 .catch(error => {
