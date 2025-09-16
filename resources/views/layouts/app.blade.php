@@ -551,6 +551,19 @@
     }
 }
 
+.media-full-page .sidebar {
+    display: none !important;
+}
+.media-full-page .hamburger-menu {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .media-full-page .content {
+        margin-left: 0 !important;
+        padding: 20px;
+    }
+}
     </style>
 </head>
     <body class="@yield('body-class', '')">

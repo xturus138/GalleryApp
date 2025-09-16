@@ -128,46 +128,7 @@
     <div id="assetViewerModal" class="edit-modal-overlay" style="display: none;">
         <div class="edit-modal-container" style="width: 95%; max-width: 1200px;">
             <div class="edit-modal-card modal-content-viewer" id="assetContent" style="border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); max-height: 96vh; overflow: hidden; display: flex; flex-direction: column;">
-                <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 16px; border-bottom: 1px solid #e5e7eb; background: #ffffff; border-radius: 12px 12px 0 0;">
-                    <div class="modal-title" id="assetViewerTitle" style="font-size: 18px; font-weight: 600; color: #111827; margin: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></div>
-                    <div class="modal-actions" style="display: flex; gap: 8px; align-items: center;">
-                        <button class="action-btn download-btn" id="downloadBtn" title="Download" style="background: none; border: none; cursor: pointer; padding: 8px; border-radius: 8px; color: #6b7280; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                <polyline points="7,10 12,15 17,10"></polyline>
-                                <line x1="12" y1="15" x2="12" y2="3"></line>
-                            </svg>
-                        </button>
-                        <button class="action-btn share-btn" id="shareBtn" title="Share" style="background: none; border: none; cursor: pointer; padding: 8px; border-radius: 8px; color: #6b7280; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="18" cy="5" r="3"></circle>
-                                <circle cx="6" cy="12" r="3"></circle>
-                                <circle cx="18" cy="19" r="3"></circle>
-                                <path d="m8.59 13.51 6.83 3.98"></path>
-                                <path d="m15.41 6.51-6.82 3.98"></path>
-                            </svg>
-                        </button>
-                        <button class="close-button edit-modal-close" onclick="hideAssetViewer()" title="Close" style="background: none; border: none; cursor: pointer; padding: 8px; border-radius: 8px; color: #6b7280; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <div id="mediaContainer" style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 24px; background: #f8fafc; min-height: 300px; max-height: 70vh; overflow: hidden;"></div>
-                <div id="assetViewerComments" class="comments-section" style="margin-top: 10px; padding: 16px 24px; background: #ffffff; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 12px;">
-                    <div class="comments-header" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">
-                        <h4 style="margin: 0; font-weight: 600; color: #111827;">Comments</h4>
-                    </div>
-                    <div id="commentsList" class="comments-list" style="max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;"></div>
-                    <form id="commentForm" class="comment-form" style="display: flex; gap: 12px; align-items: center; margin: 16px 0;">
-                        <div class="comment-input-container" style="flex: 1; display: flex; gap: 12px; align-items: center;">
-                            <input type="text" placeholder="Add a comment..." required maxlength="1000" style="flex: 1; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 9999px; font-size: 0.875rem; transition: all 0.3s ease;">
-                            <button type="submit" class="comment-submit-btn" style="background: linear-gradient(90deg, #3b82f6, #2563eb); border: none; color: white; padding: 12px 20px; border-radius: 9999px; font-weight: 600; cursor: pointer; transition: background 0.3s ease; white-space: nowrap;">Post</button>
-                        </div>
-                    </form>
-                </div>
+                <!-- Removed modal content as media view is now on a separate page -->
             </div>
         </div>
     </div>
@@ -1715,13 +1676,13 @@
                         <div class="card-content">
                             <div class="card-header">
                                 <h3 class="card-title">${asset.title || asset.original_filename}</h3>
-                                <button class="view-btn" onclick="showAssetViewer('${asset.blob_url}', '${asset.file_type}', '${asset.title || asset.original_filename}', '${asset.id}')">
+                                <a href="/media/${asset.id}" target="_blank" class="view-btn">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                         <circle cx="12" cy="12" r="3"></circle>
                                     </svg>
                                     View
-                                </button>
+                                </a>
                             </div>
                             <div class="card-meta">
                                 <span class="meta-item file-size">${asset.formatted_size}</span>
@@ -1849,59 +1810,7 @@
             setTimeout(() => modal.style.display = 'none', 300);
         }
 
-        function showAssetViewer(url, fileType, filename, assetId) {
-            const mediaContainer = document.getElementById('mediaContainer');
-            mediaContainer.innerHTML = '';
-
-            document.getElementById('assetViewerTitle').innerText = filename;
-
-            if (fileType.startsWith('image/')) {
-                const img = document.createElement('img');
-                img.src = url;
-                img.alt = filename;
-                mediaContainer.appendChild(img);
-            } else if (fileType.startsWith('video/')) {
-                const video = document.createElement('video');
-                video.src = url;
-                video.controls = true;
-                video.autoplay = true;
-                video.preload = 'metadata';
-                mediaContainer.appendChild(video);
-            }
-
-            // Load comments for this asset
-            loadComments(assetId);
-
-            // Set asset ID on modal for comment submission
-            document.getElementById('assetViewerModal').setAttribute('data-asset-id', assetId);
-            document.getElementById('assetViewerModal').setAttribute('data-asset-url', url);
-            document.getElementById('assetViewerModal').setAttribute('data-asset-filename', filename);
-
-            // Set up download functionality
-            const downloadBtn = document.getElementById('downloadBtn');
-            downloadBtn.onclick = () => downloadAsset(url, filename);
-
-            // Set up share functionality
-            const shareBtn = document.getElementById('shareBtn');
-            shareBtn.onclick = () => shareAsset(url, filename);
-
-            window.scrollTo(0, 0);
-            document.body.style.overflow = 'hidden';
-            const viewerModal = document.getElementById('assetViewerModal');
-            viewerModal.style.display = 'flex';
-            setTimeout(() => viewerModal.classList.add('active'), 10);
-        }
-
-        function hideAssetViewer() {
-            document.body.style.overflow = '';
-            const mediaContainer = document.getElementById('mediaContainer');
-            mediaContainer.innerHTML = '';
-            // Clear comments
-            document.getElementById('commentsList').innerHTML = '';
-            const viewerModal = document.getElementById('assetViewerModal');
-            viewerModal.classList.remove('active');
-            setTimeout(() => viewerModal.style.display = 'none', 300);
-        }
+        // Removed showAssetViewer and hideAssetViewer functions as media view is now on a separate page
 
         // Helper function to analyze file types
         function analyzeFileTypes(files) {

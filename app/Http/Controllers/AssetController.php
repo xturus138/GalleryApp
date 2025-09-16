@@ -158,6 +158,23 @@ class AssetController extends Controller
         return response()->json($asset);
     }
 
+    public function mediaDetail($id)
+    {
+        $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();
+
+        if (!$asset) {
+            abort(404, 'Asset not found');
+        }
+
+        $asset->formatted_size = SizeHelper::formatSize($asset->file_size);
+        $asset->likes_count = $asset->hearts()->count();
+        $asset->is_liked_by_user = $asset->isLikedBy(Auth::user());
+
+        $comments = $asset->comments()->with('user')->oldest()->get();
+
+        return view('dashboard.media', compact('asset', 'comments'));
+    }
+
     public function update(Request $request, $id)
     {
         $asset = Asset::where('id', $id)->where('uploaded_by', Auth::id())->first();

@@ -1,23 +1,19 @@
-# Login Page Modern Design Tasks
+# TODO: Fix Media View Page Layout
 
 ## Completed Tasks
 
--   [x] Analyze current login page and user requirements
--   [x] Create detailed plan for login page redesign
--   [x] Implement modern, responsive login page with:
-    -   Centered card with rounded-2xl corners and shadow
-    -   Blue gradient background with subtle cloud illustrations
-    -   Accessible labels and ARIA roles
-    -   Username and 4-digit numeric PIN inputs with masking
-    -   "Forgot PIN?" link below PIN input
-    -   Large black/brand color login button
-    -   Optional Google and Apple login buttons
-    -   Smooth fade-in animation on load
-    -   Clear focus states on inputs and buttons
+-   [x] Analyze current media.blade.php layout and CSS
+-   [x] Add html, body styles for full height and no horizontal overflow
+-   [x] Update .media-detail-page to use flexbox for centered layout with min-height: 100vh
+-   [x] Set responsive max-width (max-w-6xl) for container
+-   [x] Adjust .media-content to flex-grow and prevent overflow
+-   [x] Ensure comments list scrolls internally when many comments
+-   [x] Maintain clean, modern SaaS 2025 design consistency
+-   [x] Update responsive media queries
 
-## Pending Tasks
+## Verification Steps
 
--   [ ] Test login page responsiveness on various screen sizes
--   [ ] Verify accessibility features with screen readers and keyboard navigation
--   [ ] Confirm fade-in animation works smoothly on page load
--   [ ] Get user feedback on visual design and usability
+-   [ ] Test page with short content (no browser scrollbar, content centered vertically)
+-   [ ] Test page with many comments (page scrolls naturally vertically)
+-   [ ] Verify no horizontal scroll on any screen size
+-   [ ] Check responsive design on mobile and tablet

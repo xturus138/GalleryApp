@@ -24,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/assets/folder/{folderId}/page/{page}', [AssetController::class, 'getAssetsByFolder'])->name('assets.folder.page');
     Route::post('/upload', [AssetController::class, 'upload'])->name('asset.upload');
     Route::get('/assets/{id}', [AssetController::class, 'show'])->name('assets.show');
+    Route::get('/media/{id}', [AssetController::class, 'mediaDetail'])->name('media.detail');
     Route::put('/assets/{id}', [AssetController::class, 'update'])->name('assets.update');
     Route::delete('/assets/{id}', [AssetController::class, 'destroy'])->name('assets.destroy');
     Route::post('/assets/{id}/like', [AssetController::class, 'like'])->name('assets.like');
