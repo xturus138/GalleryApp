@@ -1624,7 +1624,7 @@
 
             // Determine per_page based on screen width - more robust detection
             const isMobile = window.innerWidth < 768 || window.matchMedia('(max-width: 767px)').matches;
-            const perPage = isMobile ? 5 : 21;
+            const perPage = isMobile ? 5 : 10;
 
             let url = '{{ route("assets.list") }}';
             if (folderId) {
