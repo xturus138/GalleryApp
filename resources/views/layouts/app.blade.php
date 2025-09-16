@@ -568,6 +568,14 @@
                         </svg>
                         Profile
                     </a></li>
+    <li><a href="/chat">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            <line x1="17" y1="8" x2="17" y2="13"></line>
+            <line x1="7" y1="8" x2="7" y2="13"></line>
+        </svg>
+        Chat
+    </a></li>
                     <li><a href="#" onclick="showCreateFolderModal()">
                         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
