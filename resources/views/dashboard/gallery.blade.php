@@ -1314,7 +1314,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: 100vh;
             background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(8px);
             display: flex;
@@ -1781,24 +1781,30 @@
         }
 
         function showUploadModal() {
+            window.scrollTo(0, 0);
+            document.body.style.overflow = 'hidden';
             const modal = document.getElementById('uploadModal');
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('active'), 10);
         }
 
         function hideUploadModal() {
+            document.body.style.overflow = '';
             const modal = document.getElementById('uploadModal');
             modal.classList.remove('active');
             setTimeout(() => modal.style.display = 'none', 300);
         }
 
         function showCreateFolderModal() {
+            window.scrollTo(0, 0);
+            document.body.style.overflow = 'hidden';
             const modal = document.getElementById('createFolderModal');
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('active'), 10);
         }
         
         function hideCreateFolderModal() {
+            document.body.style.overflow = '';
             const modal = document.getElementById('createFolderModal');
             modal.classList.remove('active');
             setTimeout(() => modal.style.display = 'none', 300);
@@ -1839,12 +1845,15 @@
             const shareBtn = document.getElementById('shareBtn');
             shareBtn.onclick = () => shareAsset(url, filename);
 
+            window.scrollTo(0, 0);
+            document.body.style.overflow = 'hidden';
             const viewerModal = document.getElementById('assetViewerModal');
             viewerModal.style.display = 'flex';
             setTimeout(() => viewerModal.classList.add('active'), 10);
         }
 
         function hideAssetViewer() {
+            document.body.style.overflow = '';
             const mediaContainer = document.getElementById('mediaContainer');
             mediaContainer.innerHTML = '';
             // Clear comments
@@ -2343,6 +2352,8 @@
             modal.innerHTML = modalContent;
             document.body.appendChild(modal);
 
+            window.scrollTo(0, 0);
+            document.body.style.overflow = 'hidden';
             // Add fade-in animation
             setTimeout(() => {
                 const overlay = document.getElementById('editModalOverlay');
@@ -2404,6 +2415,7 @@
         }
 
         function hideEditModal() {
+            document.body.style.overflow = '';
             const modal = document.getElementById('editModal');
             if (modal) {
                 modal.remove();
@@ -2479,6 +2491,8 @@
             modal.innerHTML = modalContent;
             document.body.appendChild(modal);
 
+            window.scrollTo(0, 0);
+            document.body.style.overflow = 'hidden';
             // Add fade-in animation
             setTimeout(() => {
                 const overlay = document.getElementById('editFolderOverlay');
@@ -2523,6 +2537,7 @@
         }
 
         function hideEditFolderModal() {
+            document.body.style.overflow = '';
             const modal = document.getElementById('editFolderModal');
             if (modal) {
                 modal.remove();
