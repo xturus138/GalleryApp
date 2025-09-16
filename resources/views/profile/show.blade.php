@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('body-class')
+    profile-page
+@endsection
+
 @section('content')
 <style>
     .profile-view-container {
@@ -102,6 +106,13 @@
         }
     }
 </style>
+
+<a href="{{ route('dashboard') }}" class="back-button">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"></polyline>
+    </svg>
+    Back to Dashboard
+</a>
 
 <div class="profile-view-container">
     <div class="profile-card">

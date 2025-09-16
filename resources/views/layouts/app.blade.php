@@ -515,9 +515,52 @@
                 align-self: center;
             }
         }
+.profile-page .sidebar {
+    display: none !important;
+}
+
+.profile-page .hamburger-menu {
+    display: none !important;
+}
+
+.profile-page .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    transition: all 0.3s ease;
+    margin-bottom: 24px;
+    align-self: flex-start;
+}
+
+.profile-page .back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .profile-page .content {
+        margin-left: 0 !important;
+        padding: 20px;
+    }
+    .profile-page .back-button {
+        padding: 10px 16px;
+        font-size: 13px;
+        margin-bottom: 16px;
+    }
+}
+
     </style>
 </head>
-    <body>
+    <body class="@yield('body-class', '')">
         <div class="hamburger-menu" onclick="toggleSidebar()" title="Toggle Menu">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="3" y1="12" x2="21" y2="12"></line>
