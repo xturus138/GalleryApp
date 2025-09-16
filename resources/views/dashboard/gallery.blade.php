@@ -1176,7 +1176,7 @@
             display: flex;
             align-items: center;
             flex: 1;
-            padding: 0 16px;
+            padding: 0 80px 0 16px;
             height: 100%;
             cursor: pointer;
         }
@@ -1203,25 +1203,17 @@
             letter-spacing: -0.025em;
         }
 
-        .folder-badge {
-            background: var(--border-color);
-            color: var(--text-secondary);
-            font-size: 12px;
-            font-weight: 500;
-            padding: 4px 8px;
-            border-radius: 12px;
-            margin-left: 8px;
-            flex-shrink: 0;
-            min-width: 20px;
-            text-align: center;
-        }
 
         .folder-actions {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
             gap: 4px;
             opacity: 0;
             transition: opacity 0.3s ease;
-            margin-right: 8px;
+            z-index: 1;
         }
 
         .modern-folder-item:hover .folder-actions {
@@ -1303,9 +1295,14 @@
                 padding: 16px 18px;
                 margin-bottom: 14px;
             }
-
+        
             .folder-actions {
                 opacity: 1; /* Always show on mobile */
+                right: 18px;
+            }
+        
+            .folder-row {
+                padding: 0 70px 0 16px;
             }
 
             .folder-icon {
@@ -2074,7 +2071,6 @@
                             </svg>
                         </div>
                         <span class="folder-name">${folder.name}</span>
-                        <div class="folder-badge" title="${folder.assets_count || 0} item" aria-label="${folder.assets_count || 0} items in folder">${folder.assets_count || 0}</div>
                     </div>
                     <div class="folder-actions">
                         <button class="folder-action-btn edit-btn folder-edit-btn" title="Edit folder" aria-label="Edit ${folder.name}">
@@ -2206,11 +2202,6 @@
             const current = paginationData.current_page;
             const last = paginationData.last_page;
 
-            // Add Previous text
-            const prevText = document.createElement('span');
-            prevText.textContent = 'Previous';
-            prevText.className = 'pagination-text';
-            pageNumbersContainer.appendChild(prevText);
 
             // Add page numbers
             const pages = [];
@@ -2228,11 +2219,6 @@
                 pageNumbersContainer.appendChild(pageBtn);
             });
 
-            // Add Next text
-            const nextText = document.createElement('span');
-            nextText.textContent = 'Next';
-            nextText.className = 'pagination-text';
-            pageNumbersContainer.appendChild(nextText);
 
             paginationContainer.style.display = 'flex';
         }
