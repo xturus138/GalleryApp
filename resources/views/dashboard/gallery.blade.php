@@ -89,94 +89,122 @@
         </button>
     </div>
 
-    <div id="uploadModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="hideUploadModal()">&times;</span>
-            <h2>Unggah File</h2>
-            <form id="uploadForm" action="{{ route('asset.upload') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="form-group">
-                    <label for="fileInput">Pilih File</label>
-                    <input type="file" name="files[]" id="fileInput" multiple required>
-                </div>
-                <div class="form-group">
-                    <label for="title">Judul</label>
-                    <input type="text" name="title" id="title" placeholder="Tambahkan judul untuk file Anda">
-                </div>
-                <div class="form-group">
-                    <label for="caption">Keterangan (Opsional)</label>
-                    <textarea name="caption" id="caption" placeholder="Tambahkan keterangan untuk foto atau video Anda..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="folder">Pilih Folder (Opsional)</label>
-                    <select name="folder" id="folder">
-                        <option value="none">Tidak ada folder</option>
-                        </select>
-                </div>
-                <button type="submit">Unggah File</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="assetViewerModal" class="modal">
-        <div class="modal-overlay"></div>
-        <div class="modal-content-viewer" id="assetContent">
-            <div class="modal-header">
-                <div class="modal-title" id="assetViewerTitle"></div>
-                <div class="modal-actions">
-                    <button class="action-btn download-btn" id="downloadBtn" title="Download">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="7,10 12,15 17,10"></polyline>
-                            <line x1="12" y1="15" x2="12" y2="3"></line>
-                        </svg>
-                    </button>
-                    <button class="action-btn share-btn" id="shareBtn" title="Share">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <path d="m8.59 13.51 6.83 3.98"></path>
-                            <path d="m15.41 6.51-6.82 3.98"></path>
-                        </svg>
-                    </button>
-                    <button class="close-button" onclick="hideAssetViewer()" title="Close">
+    <div id="uploadModal" class="edit-modal-overlay" style="display: none;">
+        <div class="edit-modal-container">
+            <div class="edit-modal-card">
+                <div class="edit-modal-header">
+                    <h2 class="edit-modal-title">Unggah File</h2>
+                    <button class="edit-modal-close" onclick="hideUploadModal()" aria-label="Close modal">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
                         </svg>
                     </button>
                 </div>
-            </div>
-            <div id="mediaContainer"></div>
-            <div id="assetViewerComments" class="comments-section">
-                <div class="comments-header">
-                    <h4>Comments</h4>
+                <div class="edit-modal-body">
+                    <form id="uploadForm" action="{{ route('asset.upload') }}" method="POST" enctype="multipart/form-data" class="edit-form">
+                        @csrf
+                        <div class="edit-form-group">
+                            <label for="fileInput" class="edit-form-label">Pilih File</label>
+                            <input type="file" name="files[]" id="fileInput" multiple required class="edit-form-input">
+                        </div>
+                        <div class="edit-form-group">
+                            <label for="title" class="edit-form-label">Judul</label>
+                            <input type="text" name="title" id="title" placeholder="Tambahkan judul untuk file Anda" class="edit-form-input">
+                        </div>
+                        <div class="edit-form-group">
+                            <label for="caption" class="edit-form-label">Keterangan (Opsional)</label>
+                            <textarea name="caption" id="caption" placeholder="Tambahkan keterangan untuk foto atau video Anda..." class="edit-form-textarea"></textarea>
+                        </div>
+                        <div class="edit-form-group">
+                            <label for="folder" class="edit-form-label">Pilih Folder (Opsional)</label>
+                            <select name="folder" id="folder" class="edit-form-select">
+                                <option value="none">Tidak ada folder</option>
+                                </select>
+                        </div>
+                    </form>
                 </div>
-                <div id="commentsList" class="comments-list"></div>
-                <form id="commentForm" class="comment-form">
-                    <div class="comment-input-container">
-                        <input type="text" placeholder="Add a comment..." required maxlength="1000">
-                        <button type="submit" class="comment-submit-btn">Post</button>
-                    </div>
-                </form>
+                <div class="edit-modal-footer">
+                    <button type="button" class="edit-btn edit-btn-secondary" onclick="hideUploadModal()">Batal</button>
+                    <button type="submit" form="uploadForm" class="edit-btn edit-btn-primary">Unggah File</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="createFolderModal" class="modal">
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <span class="close-button" onclick="hideCreateFolderModal()">&times;</span>
-            <h2>Buat Folder Baru</h2>
-            <form id="createFolderForm" action="{{ route('folder.create') }}" method="POST">
-                @csrf
-                <div class="form-group">
-                    <label for="folderName">Nama Folder</label>
-                    <input type="text" name="name" id="folderName" required>
+    <div id="assetViewerModal" class="edit-modal-overlay" style="display: none;">
+        <div class="edit-modal-container" style="width: 95%; max-width: 1200px;">
+            <div class="edit-modal-card modal-content-viewer" id="assetContent" style="border-radius: 12px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); max-height: 96vh; overflow: hidden; display: flex; flex-direction: column;">
+                <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding: 20px 24px 16px; border-bottom: 1px solid #e5e7eb; background: #ffffff; border-radius: 12px 12px 0 0;">
+                    <div class="modal-title" id="assetViewerTitle" style="font-size: 18px; font-weight: 600; color: #111827; margin: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></div>
+                    <div class="modal-actions" style="display: flex; gap: 8px; align-items: center;">
+                        <button class="action-btn download-btn" id="downloadBtn" title="Download" style="background: none; border: none; cursor: pointer; padding: 8px; border-radius: 8px; color: #6b7280; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7,10 12,15 17,10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
+                        <button class="action-btn share-btn" id="shareBtn" title="Share" style="background: none; border: none; cursor: pointer; padding: 8px; border-radius: 8px; color: #6b7280; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="18" cy="5" r="3"></circle>
+                                <circle cx="6" cy="12" r="3"></circle>
+                                <circle cx="18" cy="19" r="3"></circle>
+                                <path d="m8.59 13.51 6.83 3.98"></path>
+                                <path d="m15.41 6.51-6.82 3.98"></path>
+                            </svg>
+                        </button>
+                        <button class="close-button edit-modal-close" onclick="hideAssetViewer()" title="Close" style="background: none; border: none; cursor: pointer; padding: 8px; border-radius: 8px; color: #6b7280; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <button type="submit">Buat Folder</button>
-            </form>
+                <div id="mediaContainer" style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 24px; background: #f8fafc; min-height: 300px; max-height: 70vh; overflow: hidden;"></div>
+                <div id="assetViewerComments" class="comments-section" style="margin-top: 10px; padding: 16px 24px; background: #ffffff; border-radius: 0 0 12px 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 12px;">
+                    <div class="comments-header" style="border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px;">
+                        <h4 style="margin: 0; font-weight: 600; color: #111827;">Comments</h4>
+                    </div>
+                    <div id="commentsList" class="comments-list" style="max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;"></div>
+                    <form id="commentForm" class="comment-form" style="display: flex; gap: 12px; align-items: center; margin: 16px 0;">
+                        <div class="comment-input-container" style="flex: 1; display: flex; gap: 12px; align-items: center;">
+                            <input type="text" placeholder="Add a comment..." required maxlength="1000" style="flex: 1; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 9999px; font-size: 0.875rem; transition: all 0.3s ease;">
+                            <button type="submit" class="comment-submit-btn" style="background: linear-gradient(90deg, #3b82f6, #2563eb); border: none; color: white; padding: 12px 20px; border-radius: 9999px; font-weight: 600; cursor: pointer; transition: background 0.3s ease; white-space: nowrap;">Post</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="createFolderModal" class="edit-modal-overlay" style="display: none;">
+        <div class="edit-modal-container">
+            <div class="edit-modal-card">
+                <div class="edit-modal-header">
+                    <h2 class="edit-modal-title">Buat Folder Baru</h2>
+                    <button class="edit-modal-close" onclick="hideCreateFolderModal()" aria-label="Close modal">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="edit-modal-body">
+                    <form id="createFolderForm" action="{{ route('folder.create') }}" method="POST" class="edit-form">
+                        @csrf
+                        <div class="edit-form-group">
+                            <label for="folderName" class="edit-form-label">Nama Folder</label>
+                            <input type="text" name="name" id="folderName" required class="edit-form-input">
+                        </div>
+                    </form>
+                </div>
+                <div class="edit-modal-footer">
+                    <button type="button" class="edit-btn edit-btn-secondary" onclick="hideCreateFolderModal()">Batal</button>
+                    <button type="submit" form="createFolderForm" class="edit-btn edit-btn-primary">Buat Folder</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -540,87 +568,24 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
-        /* Style untuk modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
+        /* Viewer modal styles integrated into edit-modal */
+        .edit-modal-overlay.modal-viewer {
+            align-items: flex-start;
+            padding: 2vh;
         }
 
-        .modal-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .edit-modal-container.viewer-container {
             width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(2px);
+            max-width: none;
+            height: 96vh;
         }
 
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-            border-radius: 8px;
-            position: relative;
-        }
-        .modal-content form {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        .modal-content label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-        .modal-content input,
-        .modal-content textarea,
-        .modal-content select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
-        .modal-content textarea {
-            min-height: 80px;
-            resize: vertical;
-        }
-        .modal-content button {
-            margin-top: 1rem;
-            width: 100%;
-            padding: 10px;
-            background-color: #4a5568;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .modal-content button:hover {
-            background-color: #6366f1;
-        }
-
-        .modal-content-viewer {
-            background-color: #ffffff;
-            margin: 2vh auto;
+        .edit-modal-card.modal-content-viewer {
+            margin: 0;
             border-radius: 12px;
-            width: 95%;
-            max-width: 1200px;
-            position: relative;
+            height: 100%;
+            max-height: none;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            max-height: 96vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
         }
 
         .modal-header {
@@ -1816,19 +1781,27 @@
         }
 
         function showUploadModal() {
-            document.getElementById('uploadModal').style.display = 'block';
+            const modal = document.getElementById('uploadModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
         }
 
         function hideUploadModal() {
-            document.getElementById('uploadModal').style.display = 'none';
+            const modal = document.getElementById('uploadModal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
         }
 
         function showCreateFolderModal() {
-            document.getElementById('createFolderModal').style.display = 'block';
+            const modal = document.getElementById('createFolderModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
         }
         
         function hideCreateFolderModal() {
-            document.getElementById('createFolderModal').style.display = 'none';
+            const modal = document.getElementById('createFolderModal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
         }
 
         function showAssetViewer(url, fileType, filename, assetId) {
@@ -1866,7 +1839,9 @@
             const shareBtn = document.getElementById('shareBtn');
             shareBtn.onclick = () => shareAsset(url, filename);
 
-            document.getElementById('assetViewerModal').style.display = 'block';
+            const viewerModal = document.getElementById('assetViewerModal');
+            viewerModal.style.display = 'flex';
+            setTimeout(() => viewerModal.classList.add('active'), 10);
         }
 
         function hideAssetViewer() {
@@ -1874,7 +1849,9 @@
             mediaContainer.innerHTML = '';
             // Clear comments
             document.getElementById('commentsList').innerHTML = '';
-            document.getElementById('assetViewerModal').style.display = 'none';
+            const viewerModal = document.getElementById('assetViewerModal');
+            viewerModal.classList.remove('active');
+            setTimeout(() => viewerModal.style.display = 'none', 300);
         }
 
         // Helper function to analyze file types
@@ -2467,26 +2444,48 @@
 
         function showEditFolderModal(id, name) {
             const modalContent = `
-                <div class="modal-overlay"></div>
-                <div class="modal-content">
-                    <span class="close-button" onclick="hideEditFolderModal()">&times;</span>
-                    <h2>Edit Folder</h2>
-                    <form id="editFolderForm">
-                        <input type="hidden" name="id" value="${id}">
-                        <div class="form-group">
-                            <label for="editFolderName">Nama Folder</label>
-                            <input type="text" id="editFolderName" name="name" value="${name}" required>
+                <div class="edit-modal-overlay" id="editFolderOverlay">
+                    <div class="edit-modal-container">
+                        <div class="edit-modal-card">
+                            <div class="edit-modal-header">
+                                <h2 class="edit-modal-title">Edit Folder</h2>
+                                <button class="edit-modal-close" onclick="hideEditFolderModal()" aria-label="Close modal">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="edit-modal-body">
+                                <form id="editFolderForm" class="edit-form">
+                                    <input type="hidden" name="id" value="${id}">
+                                    <div class="edit-form-group">
+                                        <label for="editFolderName" class="edit-form-label">Nama Folder</label>
+                                        <input type="text" id="editFolderName" name="name" value="${name}" required class="edit-form-input">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="edit-modal-footer">
+                                <button type="button" class="edit-btn edit-btn-secondary" onclick="hideEditFolderModal()">Batal</button>
+                                <button type="submit" form="editFolderForm" class="edit-btn edit-btn-primary">Simpan Perubahan</button>
+                            </div>
                         </div>
-                        <button type="submit">Simpan Perubahan</button>
-                    </form>
+                    </div>
                 </div>
             `;
 
             const modal = document.createElement('div');
             modal.id = 'editFolderModal';
-            modal.className = 'modal';
             modal.innerHTML = modalContent;
             document.body.appendChild(modal);
+
+            // Add fade-in animation
+            setTimeout(() => {
+                const overlay = document.getElementById('editFolderOverlay');
+                if (overlay) {
+                    overlay.classList.add('active');
+                }
+            }, 10);
 
             modal.style.display = 'block';
 
