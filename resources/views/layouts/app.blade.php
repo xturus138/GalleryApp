@@ -141,6 +141,25 @@
             margin-top: 4px;
             letter-spacing: 0.025em;
         }
+        .sidebar-menu a.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            position: relative;
+            pointer-events: none;
+        }
+        .sidebar-menu a.disabled::after {
+            content: "Coming Soon";
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 10px;
+            color: #9ca3af;
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
         .sidebar-menu {
             list-style: none;
             padding: 0;
@@ -576,14 +595,22 @@
                         </svg>
                         Profile
                     </a></li>
-    <li><a href="/chat">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            <line x1="17" y1="8" x2="17" y2="13"></line>
-            <line x1="7" y1="8" x2="7" y2="13"></line>
-        </svg>
-        Chat
-    </a></li>
+                    <li><a href="/chat" class="disabled" tabindex="-1" aria-disabled="true">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            <line x1="17" y1="8" x2="17" y2="13"></line>
+                            <line x1="7" y1="8" x2="7" y2="13"></line>
+                        </svg>
+                        Chat
+                    </a></li>
+                    <li><a href="/people" class="disabled" tabindex="-1" aria-disabled="true">
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M17 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M7 21v-2a4 4 0 0 1 3-3.87"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        People
+                    </a></li>
                     <li><a href="#" onclick="showCreateFolderModal()">
                         <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
