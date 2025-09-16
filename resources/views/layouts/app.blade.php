@@ -467,6 +467,10 @@
             .user-info {
                 display: none;
             }
+        
+            .sidebar-menu {
+                margin-top: 60px;
+            }
             .sidebar-header img {
                 width: 56px;
                 height: 56px;
