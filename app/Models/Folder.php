@@ -16,6 +16,11 @@ class Folder extends Model
 
     protected $fillable = ['id', 'name', 'created_by'];
 
+    public function assets()
+    {
+        return $this->hasMany(Asset::class, 'folder_id');
+    }
+
     protected static function boot()
     {
         parent::boot();

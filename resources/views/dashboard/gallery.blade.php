@@ -188,6 +188,38 @@
     </div>
 
     <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-hover: #f9fafb;
+            --bg-selected: #f0f4ff;
+            --border-color: #e5e7eb;
+            --border-hover: #d1d5db;
+            --text-primary: #111827;
+            --text-secondary: #374151;
+            --text-muted: #6b7280;
+            --text-light: #9ca3af;
+            --brand-primary: #6366f1;
+            --brand-secondary: #4f46e5;
+            --success: #059669;
+            --error: #ef4444;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1f2937;
+            --bg-secondary: #111827;
+            --bg-hover: #374151;
+            --bg-selected: #1e1b4b;
+            --border-color: #374151;
+            --border-hover: #4b5563;
+            --text-primary: #f9fafb;
+            --text-secondary: #e5e7eb;
+            --text-muted: #9ca3af;
+            --text-light: #6b7280;
+            --brand-primary: #818cf8;
+            --brand-secondary: #6366f1;
+        }
+
         /* Modern Header Styles */
         .modern-header {
             background: #ffffff;
@@ -779,14 +811,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px;
-            margin-top: 32px;
-            padding: 16px;
+            gap: 12px;
+            margin-top: 20px;
+            padding: 16px 0;
         }
 
         .pagination-arrow {
-            background: #ffffff;
-            border: 2px solid #e5e7eb;
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
             border-radius: 12px;
             width: 44px;
             height: 44px;
@@ -795,13 +827,13 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            color: #6b7280;
+            color: var(--text-muted);
         }
 
         .pagination-arrow:hover:not(:disabled) {
-            background: #f9fafb;
-            border-color: #d1d5db;
-            color: #374151;
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+            color: var(--text-secondary);
             transform: translateY(-1px);
         }
 
@@ -812,13 +844,20 @@
 
         .pagination-numbers {
             display: flex;
-            gap: 4px;
+            gap: 8px;
             align-items: center;
         }
 
-        .pagination-numbers button {
-            background: #ffffff;
-            border: 2px solid #e5e7eb;
+        .pagination-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-muted);
+            padding: 0 8px;
+        }
+
+        .pagination-btn {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
             border-radius: 12px;
             width: 44px;
             height: 44px;
@@ -828,22 +867,34 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            color: #374151;
+            color: var(--text-secondary);
             transition: all 0.2s ease;
         }
 
-        .pagination-numbers button:hover:not(:disabled) {
-            background: #f9fafb;
-            border-color: #d1d5db;
+        .pagination-btn:hover:not(:disabled) {
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
             transform: translateY(-1px);
         }
 
-        .pagination-numbers button:disabled {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-            border-color: #6366f1;
+        .pagination-btn.active {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+            border-color: var(--brand-primary);
             color: white;
             cursor: default;
             transform: none;
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 8px;
         }
         .comments-section {
             margin-top: 10px;
@@ -1081,15 +1132,15 @@
         .modern-folder-item {
             display: flex;
             align-items: center;
-            padding: 12px 15px;
+            height: 52px;
             margin-bottom: 8px;
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
+            background: var(--bg-primary);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
+            cursor: pointer;
         }
 
         .modern-folder-item::before {
@@ -1099,69 +1150,77 @@
             left: 0;
             width: 4px;
             height: 100%;
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
             opacity: 0;
             transition: opacity 0.3s ease;
+            border-radius: 0 4px 4px 0;
         }
 
         .modern-folder-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-            border-color: #6366f1;
+            background: var(--bg-hover);
+            border-color: var(--border-hover);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .modern-folder-item:hover::before {
+        .modern-folder-item.selected {
+            background: var(--bg-selected);
+            border-color: var(--brand-primary);
+        }
+
+        .modern-folder-item.selected::before {
             opacity: 1;
         }
 
-        .folder-link {
+        .folder-row {
             display: flex;
             align-items: center;
             flex: 1;
-            text-decoration: none;
-            color: #374151;
-            font-weight: 500;
-            transition: color 0.2s ease;
-            padding: 4px 0;
-        }
-
-        .folder-link:hover {
-            color: #6366f1;
+            padding: 0 16px;
+            height: 100%;
+            cursor: pointer;
         }
 
         .folder-icon {
             margin-right: 12px;
-            color: #6366f1;
+            color: var(--brand-primary);
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
-            background: rgba(99, 102, 241, 0.1);
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-
-        .modern-folder-item:hover .folder-icon {
-            background: rgba(99, 102, 241, 0.2);
-            transform: scale(1.05);
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
         }
 
         .folder-name {
             flex: 1;
-            font-size: 14px;
-            font-weight: 500;
-            color: #374151;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            letter-spacing: -0.025em;
+        }
+
+        .folder-badge {
+            background: var(--border-color);
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+            flex-shrink: 0;
+            min-width: 20px;
+            text-align: center;
         }
 
         .folder-actions {
             display: flex;
             gap: 4px;
             opacity: 0;
-            transition: opacity 0.2s ease;
+            transition: opacity 0.3s ease;
+            margin-right: 8px;
         }
 
         .modern-folder-item:hover .folder-actions {
@@ -1178,25 +1237,70 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            color: var(--text-muted);
         }
 
         .folder-action-btn:hover {
             background: rgba(0, 0, 0, 0.05);
+            transform: scale(1.1);
+        }
+
+        .folder-action-btn:active {
+            transform: scale(0.95);
         }
 
         .edit-btn:hover {
-            color: #059669;
+            color: var(--success);
+            background: rgba(5, 150, 105, 0.1);
         }
 
         .delete-btn:hover {
-            color: #ef4444;
+            color: var(--error);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--text-light);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Enhanced search input styling */
+        .search-input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            background: #ffffff;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .search-input::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
         }
 
         /* Mobile adjustments for folder items */
         @media (max-width: 768px) {
             .modern-folder-item {
-                padding: 14px 15px;
-                margin-bottom: 10px;
+                padding: 16px 18px;
+                margin-bottom: 14px;
             }
 
             .folder-actions {
@@ -1204,14 +1308,42 @@
             }
 
             .folder-icon {
-                width: 28px;
-                height: 28px;
+                width: 36px;
+                height: 36px;
+                margin-right: 12px;
             }
 
             .folder-name {
+                font-size: 14px;
+            }
+
+            .search-input {
+                padding: 12px 16px;
                 font-size: 13px;
             }
         }
+
+        /* Animation for folder items */
+        @keyframes folderSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .modern-folder-item {
+            animation: folderSlideIn 0.4s ease-out both;
+        }
+
+        .modern-folder-item:nth-child(1) { animation-delay: 0.1s; }
+        .modern-folder-item:nth-child(2) { animation-delay: 0.15s; }
+        .modern-folder-item:nth-child(3) { animation-delay: 0.2s; }
+        .modern-folder-item:nth-child(4) { animation-delay: 0.25s; }
+        .modern-folder-item:nth-child(5) { animation-delay: 0.3s; }
 
         /* Modern Edit Modal Styles */
         .edit-modal-overlay {
@@ -1919,27 +2051,37 @@
             const folderSidebar = document.getElementById('folders-list-container');
             folderSidebar.innerHTML = '';
 
-            folders.forEach(folder => {
+            if (folders.length === 0) {
+                folderSidebar.innerHTML = '<div class="empty-state">Kosong</div>';
+                document.getElementById('folders-pagination').style.display = 'none';
+                return;
+            }
+
+            folders.forEach((folder, index) => {
                 const folderItem = document.createElement('div');
                 folderItem.className = 'modern-folder-item';
+                folderItem.setAttribute('role', 'listitem');
+                folderItem.setAttribute('tabindex', '0');
+                folderItem.style.animationDelay = `${index * 0.1}s`;
                 folderItem.innerHTML = `
-                    <a href="#" class="folder-link" onclick="selectFolder(${folder.id}, '${folder.name}')">
+                    <div class="folder-row" onclick="selectFolder(${folder.id}, '${folder.name}')" onkeydown="handleFolderKeydown(event, ${folder.id}, '${folder.name}')" role="button" tabindex="0" aria-label="Select folder ${folder.name}">
                         <div class="folder-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                             </svg>
                         </div>
                         <span class="folder-name">${folder.name}</span>
-                    </a>
+                        <div class="folder-badge" title="${folder.assets_count || 0} item" aria-label="${folder.assets_count || 0} items in folder">${folder.assets_count || 0}</div>
+                    </div>
                     <div class="folder-actions">
-                        <button class="folder-action-btn edit-btn" onclick="showEditFolderModal(${folder.id}, '${folder.name}')" title="Edit">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <button class="folder-action-btn edit-btn" onclick="event.stopPropagation(); showEditFolderModal(${folder.id}, '${folder.name}')" onkeydown="handleActionKeydown(event)" title="Edit folder" aria-label="Edit ${folder.name}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                 <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                             </svg>
                         </button>
-                        <button class="folder-action-btn delete-btn" onclick="deleteFolder(${folder.id}, '${folder.name}')" title="Delete">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <button class="folder-action-btn delete-btn" onclick="event.stopPropagation(); deleteFolder(${folder.id}, '${folder.name}')" onkeydown="handleActionKeydown(event)" title="Delete folder" aria-label="Delete ${folder.name}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <polyline points="3,6 5,6 21,6"></polyline>
                                 <path d="m19,6v14a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6m3,0V4a2,2 0 0,1,2-2h4a2,2 0 0,1,2,2v2"></path>
                                 <line x1="10" y1="11" x2="10" y2="17"></line>
@@ -1962,16 +2104,40 @@
         function selectFolder(folderId, folderName) {
             document.getElementById('current-view-title').innerText = folderName;
             fetchAssets(folderId, 1); // Reset to page 1 when switching folders
+
+            // Update selected state
+            document.querySelectorAll('.modern-folder-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.currentTarget.closest('.modern-folder-item').classList.add('selected');
+        }
+
+        function handleFolderKeydown(event, folderId, folderName) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                selectFolder(folderId, folderName);
+            }
+        }
+
+        function handleActionKeydown(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                event.target.click();
+            }
         }
 
         function renderFoldersPagination(paginationData) {
             const paginationContainer = document.getElementById('folders-pagination');
-            // const pageInfo = document.getElementById('folders-page-info');
             const pageNumbersContainer = document.getElementById('folders-page-numbers');
             const prevBtn = document.getElementById('folders-prev');
             const nextBtn = document.getElementById('folders-next');
 
-            // pageInfo.textContent = `Page ${paginationData.current_page} of ${paginationData.last_page}`;
+            // Update page info text
+            const pageInfo = document.getElementById('folders-page-info');
+            if (pageInfo) {
+                pageInfo.textContent = `Halaman ${paginationData.current_page} dari ${paginationData.last_page}`;
+            }
+
             prevBtn.disabled = paginationData.current_page <= 1;
             nextBtn.disabled = paginationData.current_page >= paginationData.last_page;
 
@@ -1984,6 +2150,12 @@
             const current = paginationData.current_page;
             const last = paginationData.last_page;
 
+            // Add Previous text
+            const prevText = document.createElement('span');
+            prevText.textContent = 'Previous';
+            prevText.className = 'pagination-text';
+            pageNumbersContainer.appendChild(prevText);
+
             // Add page numbers
             const pages = [];
             for (let i = 1; i <= last; i++) pages.push(i);
@@ -1993,11 +2165,18 @@
                 pageBtn.textContent = page;
                 pageBtn.className = 'pagination-btn';
                 if (page === current) {
+                    pageBtn.classList.add('active');
                     pageBtn.disabled = true;
                 }
                 pageBtn.onclick = () => fetchFolders(page);
                 pageNumbersContainer.appendChild(pageBtn);
             });
+
+            // Add Next text
+            const nextText = document.createElement('span');
+            nextText.textContent = 'Next';
+            nextText.className = 'pagination-text';
+            pageNumbersContainer.appendChild(nextText);
 
             paginationContainer.style.display = 'flex';
         }
@@ -2012,10 +2191,19 @@
 
             // Add live search for folders
             const searchInput = document.getElementById('folder-search');
+            const clearSearchBtn = document.getElementById('clear-search');
+
             searchInput.addEventListener('input', () => {
                 const query = searchInput.value.toLowerCase();
                 const filteredFolders = allFolders.filter(folder => folder.name.toLowerCase().includes(query));
                 renderFolders(filteredFolders);
+            });
+
+            // Clear search functionality
+            clearSearchBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                searchInput.focus();
+                renderFolders(allFolders);
             });
 
             // Add auto-close functionality for mobile menu
@@ -2029,7 +2217,8 @@
             const sidebarLinks = document.querySelectorAll('.sidebar-menu a, .sidebar-menu li a');
             sidebarLinks.forEach(link => {
                 link.addEventListener('click', () => {
-                    // Removed auto-close to keep sidebar fixed/open
+                    // Keep sidebar open on mobile for better UX
+                    // Only close if explicitly clicked outside or on close button
                 });
             });
         }

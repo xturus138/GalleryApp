@@ -24,7 +24,7 @@ class FolderController extends Controller
     public function list(Request $request)
     {
         $page = $request->query('page', 1);
-        $folders = Folder::where('created_by', Auth::id())->paginate(5, ['*'], 'page', $page);
+        $folders = Folder::where('created_by', Auth::id())->withCount('assets')->paginate(5, ['*'], 'page', $page);
         return response()->json($folders);
     }
 
@@ -51,8 +51,9 @@ class FolderController extends Controller
             return response()->json(['success' => false, 'message' => 'Folder not found'], 404);
         }
 
-        // Optional: Handle assets in the folder (e.g., set to null or delete)
-        // For now, we'll just delete the folder
+        // Handle assets in the folder by setting folder_id to null
+        \App\Models\Asset::where('folder_id', $id)->update(['folder_id' => null]);
+
         $folder->delete();
 
         return response()->json(['success' => true, 'message' => 'Folder deleted successfully'], 200);
