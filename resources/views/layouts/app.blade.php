@@ -422,22 +422,17 @@
                 position: fixed;
                 top: 60px;
                 left: 0;
-                width: 280px;
+                width: 200px;
                 height: calc(100vh - 60px);
                 z-index: 1500;
-                transform: translateX(-100%);
-                opacity: 0;
-                visibility: hidden;
+                transform: translateX(0);
+                opacity: 1;
+                visibility: visible;
                 transition: all 0.3s ease;
                 padding: 20px;
                 box-sizing: border-box;
                 border-radius: 0 16px 16px 0;
-                max-width: 80vw;
-            }
-            .sidebar.show {
-                transform: translateX(0);
-                opacity: 1;
-                visibility: visible;
+                max-width: 200px;
             }
             .sidebar-overlay {
                 display: none;
@@ -463,7 +458,7 @@
             }
             .content {
                 padding: 20px;
-                margin-left: 0;
+                margin-left: 200px;
             }
             .header {
                 flex-direction: column;

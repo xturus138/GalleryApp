@@ -165,6 +165,7 @@
     </div>
 
     <div id="createFolderModal" class="modal">
+        <div class="modal-overlay"></div>
         <div class="modal-content">
             <span class="close-button" onclick="hideCreateFolderModal()">&times;</span>
             <h2>Buat Folder Baru</h2>
@@ -2050,21 +2051,23 @@
         function renderFolders(folders, paginationData = null) {
             const folderSidebar = document.getElementById('folders-list-container');
             folderSidebar.innerHTML = '';
-
+        
             if (folders.length === 0) {
                 folderSidebar.innerHTML = '<div class="empty-state">Kosong</div>';
                 document.getElementById('folders-pagination').style.display = 'none';
                 return;
             }
-
+        
             folders.forEach((folder, index) => {
                 const folderItem = document.createElement('div');
                 folderItem.className = 'modern-folder-item';
                 folderItem.setAttribute('role', 'listitem');
                 folderItem.setAttribute('tabindex', '0');
                 folderItem.style.animationDelay = `${index * 0.1}s`;
+                folderItem.setAttribute('data-folder-id', folder.id);
+                folderItem.setAttribute('data-folder-name', folder.name);
                 folderItem.innerHTML = `
-                    <div class="folder-row" onclick="selectFolder(${folder.id}, '${folder.name}')" onkeydown="handleFolderKeydown(event, ${folder.id}, '${folder.name}')" role="button" tabindex="0" aria-label="Select folder ${folder.name}">
+                    <div class="folder-row" role="button" tabindex="0" aria-label="Select folder ${folder.name}">
                         <div class="folder-icon">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
@@ -2074,13 +2077,13 @@
                         <div class="folder-badge" title="${folder.assets_count || 0} item" aria-label="${folder.assets_count || 0} items in folder">${folder.assets_count || 0}</div>
                     </div>
                     <div class="folder-actions">
-                        <button class="folder-action-btn edit-btn" onclick="event.stopPropagation(); showEditFolderModal(${folder.id}, '${folder.name}')" onkeydown="handleActionKeydown(event)" title="Edit folder" aria-label="Edit ${folder.name}">
+                        <button class="folder-action-btn edit-btn folder-edit-btn" title="Edit folder" aria-label="Edit ${folder.name}">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                 <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                             </svg>
                         </button>
-                        <button class="folder-action-btn delete-btn" onclick="event.stopPropagation(); deleteFolder(${folder.id}, '${folder.name}')" onkeydown="handleActionKeydown(event)" title="Delete folder" aria-label="Delete ${folder.name}">
+                        <button class="folder-action-btn delete-btn folder-delete-btn" title="Delete folder" aria-label="Delete ${folder.name}">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <polyline points="3,6 5,6 21,6"></polyline>
                                 <path d="m19,6v14a2,2 0 0,1-2,2H7a2,2 0 0,1-2-2V6m3,0V4a2,2 0 0,1,2-2h4a2,2 0 0,1,2,2v2"></path>
@@ -2092,37 +2095,90 @@
                 `;
                 folderSidebar.appendChild(folderItem);
             });
-
+        
             // Handle pagination
             if (paginationData && paginationData.last_page > 1) {
                 renderFoldersPagination(paginationData);
             } else {
                 document.getElementById('folders-pagination').style.display = 'none';
             }
+        
+            // Attach event listeners after rendering
+            attachFolderEventListeners();
         }
 
-        function selectFolder(folderId, folderName) {
+        function attachFolderEventListeners() {
+            const folderSidebar = document.getElementById('folders-list-container');
+        
+            // Event delegation for folder row clicks and keydown
+            folderSidebar.addEventListener('click', function(event) {
+                if (event.target.closest('.folder-row')) {
+                    const folderItem = event.target.closest('.modern-folder-item');
+                    const folderId = folderItem.getAttribute('data-folder-id');
+                    const folderName = folderItem.getAttribute('data-folder-name');
+                    if (folderId && folderName) {
+                        selectFolder(folderId, folderName, event);
+                    }
+                }
+            });
+        
+            folderSidebar.addEventListener('keydown', function(event) {
+                if (event.target.closest('.folder-row')) {
+                    const folderItem = event.target.closest('.modern-folder-item');
+                    const folderId = folderItem.getAttribute('data-folder-id');
+                    const folderName = folderItem.getAttribute('data-folder-name');
+                    if (folderId && folderName && (event.key === 'Enter' || event.key === ' ')) {
+                        event.preventDefault();
+                        selectFolder(folderId, folderName, event);
+                    }
+                }
+            });
+        
+            // Event delegation for edit buttons
+            folderSidebar.addEventListener('click', function(event) {
+                if (event.target.closest('.folder-edit-btn')) {
+                    event.stopPropagation();
+                    const folderItem = event.target.closest('.modern-folder-item');
+                    const folderId = folderItem.getAttribute('data-folder-id');
+                    const folderName = folderItem.getAttribute('data-folder-name');
+                    if (folderId && folderName) {
+                        showEditFolderModal(folderId, folderName);
+                    }
+                }
+            });
+        
+            // Event delegation for delete buttons
+            folderSidebar.addEventListener('click', function(event) {
+                if (event.target.closest('.folder-delete-btn')) {
+                    event.stopPropagation();
+                    const folderItem = event.target.closest('.modern-folder-item');
+                    const folderId = folderItem.getAttribute('data-folder-id');
+                    const folderName = folderItem.getAttribute('data-folder-name');
+                    if (folderId && folderName) {
+                        deleteFolder(folderId, folderName);
+                    }
+                }
+            });
+        
+            // Keydown for action buttons
+            folderSidebar.addEventListener('keydown', function(event) {
+                if (event.target.closest('.folder-action-btn') && (event.key === 'Enter' || event.key === ' ')) {
+                    event.preventDefault();
+                    event.target.click();
+                }
+            });
+        }
+        
+        function selectFolder(folderId, folderName, event) {
             document.getElementById('current-view-title').innerText = folderName;
             fetchAssets(folderId, 1); // Reset to page 1 when switching folders
-
+        
             // Update selected state
             document.querySelectorAll('.modern-folder-item').forEach(item => {
                 item.classList.remove('selected');
             });
-            event.currentTarget.closest('.modern-folder-item').classList.add('selected');
-        }
-
-        function handleFolderKeydown(event, folderId, folderName) {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                selectFolder(folderId, folderName);
-            }
-        }
-
-        function handleActionKeydown(event) {
-            if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                event.target.click();
+            if (event) {
+                event.currentTarget.closest('.modern-folder-item').classList.add('selected');
             }
         }
 
@@ -2425,6 +2481,7 @@
 
         function showEditFolderModal(id, name) {
             const modalContent = `
+                <div class="modal-overlay"></div>
                 <div class="modal-content">
                     <span class="close-button" onclick="hideEditFolderModal()">&times;</span>
                     <h2>Edit Folder</h2>

@@ -3,7 +3,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\Folder;
+use App\Models\Asset;
 use Illuminate\Support\Str;
 
 class FolderController extends Controller
@@ -13,7 +15,6 @@ class FolderController extends Controller
         $request->validate(['name' => 'required|string|max:255']);
 
         $folder = Folder::create([
-            'id' => Str::uuid(),
             'name' => $request->input('name'),
             'created_by' => Auth::id(),
         ]);
@@ -39,6 +40,7 @@ class FolderController extends Controller
         }
 
         $folder->update(['name' => $request->input('name')]);
+        $folder->refresh();
 
         return response()->json(['success' => true, 'folder' => $folder], 200);
     }
@@ -51,10 +53,10 @@ class FolderController extends Controller
             return response()->json(['success' => false, 'message' => 'Folder not found'], 404);
         }
 
-        // Handle assets in the folder by setting folder_id to null
-        \App\Models\Asset::where('folder_id', $id)->update(['folder_id' => null]);
-
-        $folder->delete();
+        DB::transaction(function () use ($id) {
+            Asset::where('folder_id', $id)->update(['folder_id' => null]);
+            Folder::where('id', $id)->delete();
+        });
 
         return response()->json(['success' => true, 'message' => 'Folder deleted successfully'], 200);
     }
