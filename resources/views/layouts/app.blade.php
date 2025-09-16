@@ -35,25 +35,6 @@
             border-radius: 0 16px 16px 0;
             overflow-y: auto;
         }
-        @media (max-width: 768px) {
-            .sidebar {
-                position: fixed;
-                top: 60px;
-                left: 0;
-                width: 100%;
-                height: calc(100vh - 60px);
-                z-index: 1500;
-                transform: translateY(-100%);
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.3s ease;
-            }
-            .sidebar.show {
-                transform: translateY(0);
-                opacity: 1;
-                visibility: visible;
-            }
-        }
         .sidebar-header {
             text-align: center;
             margin-bottom: 2rem;
@@ -413,19 +394,21 @@
         @media (max-width: 768px) {
             .sidebar {
                 position: fixed;
-                top: 60px;
+                top: 0;
                 left: 0;
-                width: 200px;
-                height: calc(100vh - 60px);
+                width: 280px;
+                height: 100vh;
                 z-index: 1500;
-                transform: translateX(0);
-                opacity: 1;
-                visibility: visible;
-                transition: all 0.3s ease;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
                 padding: 20px;
                 box-sizing: border-box;
                 border-radius: 0 16px 16px 0;
-                max-width: 200px;
+                max-width: 280px;
+                overflow-y: auto;
+            }
+            .sidebar.show {
+                transform: translateX(0);
             }
             .sidebar-overlay {
                 display: none;
@@ -451,7 +434,7 @@
             }
             .content {
                 padding: 20px;
-                margin-left: 200px;
+                margin-left: 0;
             }
             .header {
                 flex-direction: column;
@@ -477,6 +460,12 @@
             }
             .sidebar-close-btn {
                 display: block !important;
+                top: 15px;
+                right: 15px;
+            }
+        
+            .user-info {
+                display: none;
             }
             .sidebar-header img {
                 width: 56px;
