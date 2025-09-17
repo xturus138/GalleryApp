@@ -1,35 +1,43 @@
-name: Deploy Laravel to cPanel
+name: 🚀 Deploy Laravel (cPanel Safe)
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Install PHP dependencies
-        run: composer install --no-dev --optimize-autoloader
-
-      - name: Deploy to cPanel via FTP
+      - name: FTP Deploy (FTPS, safe excludes)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
-          protocol: ftp
+          protocol: ftps
+          security: strict
+          timeout: 120000
           local-dir: ./
           server-dir: /home/qoittgkw/gallery-app/
           exclude: |
             **/.git*
-            **/.github*
+            **/.github/**
+            **/.vscode/**
+            **/.idea/**
+            **/.DS_Store
+            **/*.log
+            **/*.sql
+            **/*.zip
+            **/*.tar.gz
             **/node_modules/**
+            **/vendor/**              # biarkan vendor di server apa adanya
             **/tests/**
-            **/storage/logs/**
-            **/storage/framework/**
+            **/storage/**             # jangan sentuh storage server
+            **/public/storage/**      # jaga symlink storage di public
+            **/.env                   # jangan pernah upload .env
+            **/.env.*                 # semua varian .env.* juga skip
