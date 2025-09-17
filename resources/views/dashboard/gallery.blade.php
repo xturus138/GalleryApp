@@ -26,6 +26,7 @@
         </div>
         <div class="storage-progress">
             <div class="storage-label">
+                <span>Hosting 5000 perbulan, nanti upgrade</span>
                 <span>Storage Used</span>
                 <span class="storage-text">{{ $totalStorageFormatted }} / {{ $totalStorageLimit }}</span>
             </div>

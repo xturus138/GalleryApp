@@ -22,8 +22,8 @@ class AssetController extends Controller
         $folders = Folder::where('created_by', Auth::id())->get();
         $totalStorageUsed = Asset::where('uploaded_by', Auth::id())->sum('file_size');
         $totalStorageFormatted = SizeHelper::formatSize($totalStorageUsed);
-        $totalStorageLimit = '8 GB'; // Hardcoded
-        $totalStorageLimitBytes = 8 * 1000 * 1000 * 1000; // 8GB in bytes
+        $totalStorageLimit = '1 GB'; // Hardcoded
+        $totalStorageLimitBytes = 1 * 1000 * 1000 * 1000; // 8GB in bytes
         $percentageUsed = $totalStorageUsed > 0 ? round(($totalStorageUsed / $totalStorageLimitBytes) * 100, 2) : 0;
         return view('dashboard.gallery', compact('folders', 'totalStorageFormatted', 'totalStorageLimit', 'percentageUsed'));
     }
@@ -73,7 +73,7 @@ class AssetController extends Controller
         try {
             $request->validate([
                 'files' => 'required|array',
-                'files.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,webm|max:100000',
+                'files.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,webm|max:1024000',
                 'title' => 'nullable|string|max:255',
                 'caption' => 'nullable|string',
                 'folder' => [
@@ -202,13 +202,26 @@ class AssetController extends Controller
             return response()->json(['error' => 'Asset not found'], 404);
         }
 
-        // Delete the file from storage
-        Storage::disk('public')->delete(str_replace('/storage/', '', $asset->blob_url));
+        // Ambil path relatif yang benar
+        $filePath = str_replace(url('/storage') . '/', '', $asset->blob_url);
+        $thumbPath = $asset->thumbnail_url ? str_replace(url('/storage') . '/', '', $asset->thumbnail_url) : null;
 
+        // Hapus file utama
+        if ($filePath) {
+            Storage::disk('public')->delete($filePath);
+        }
+
+        // Hapus thumbnail kalau bukan default
+        if ($thumbPath && !Str::endsWith($thumbPath, 'video-thumbnail.png')) {
+            Storage::disk('public')->delete($thumbPath);
+        }
+
+        // Hapus dari database
         $asset->delete();
 
         return response()->json(['success' => true, 'message' => 'Asset deleted successfully']);
     }
+
 
     public function like($id)
     {
