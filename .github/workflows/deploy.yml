@@ -25,7 +25,7 @@ jobs:
           local-dir: ./
           server-dir: /home/qoittgkw/gallery-app/
           exclude: |
-            **/.git*
+            **/.git**
             **/.github/**
             **/.vscode/**
             **/.idea/**
