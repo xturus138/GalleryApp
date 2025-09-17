@@ -473,7 +473,7 @@
 
             <button type="submit" class="btn" id="loginBtn" aria-describedby="login-description">Login</button>
         </form>
-        <p class="beta-note">Note: This app is still in beta and may contain bugs, but your data storage is secure.</p>
+        <p class="beta-note">Note: This app is still in beta and may contain bugs, but your data storage is secure!!!.</p>
         <p id="mobileNote" class="beta-note" style="display: none; margin-top: 1rem; font-style: normal;">You are currently viewing this website on a mobile device. For the best experience, we recommend using a desktop or tablet. Some features may not be fully optimized on mobile.</p>
     </div>
 
